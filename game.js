@@ -1,11 +1,8 @@
-
-
-
 const canvas = document.getElementById("game");
 const ctx = canvas.getContext("2d");
 
 let keys = {};
-document.addEventListener("keydown", e => keys[e.code] = true)
+document.addEventListener("keydown", e => keys[e.code] = true);
 document.addEventListener("keyup", e => keys[e.code] = false);
 
 const gravity = 0.6;
@@ -13,9 +10,11 @@ const friction = 0.8;
 
 let level = 0;
 let score = 0;
+let transitioning = false;
 
-const levls = [
+const levels = [
   {
+    // Level 1
     playerStart: { x: 50, y: 300 },
     goal: { x: 700, y: 330 },
     platforms: [
@@ -33,6 +32,7 @@ const levls = [
     ]
   },
   {
+    // Level 2
     playerStart: { x: 30, y: 300 },
     goal: { x: 700, y: 150 },
     platforms: [
@@ -49,6 +49,30 @@ const levls = [
     ],
     enemies: [
       { x: 600, y: 340, width: 30, height: 30, dir: -1 },
+    ]
+  },
+  {
+    // Level 3
+    playerStart: { x: 20, y: 300 },
+    goal: { x: 750, y: 50 },
+    platforms: [
+      { x: 0, y: 370, width: 800, height: 30 },
+      { x: 150, y: 320, width: 100, height: 20 },
+      { x: 300, y: 260, width: 100, height: 20 },
+      { x: 450, y: 200, width: 100, height: 20 },
+      { x: 600, y: 140, width: 100, height: 20 },
+      { x: 400, y: 300, width: 40, height: 20, type: "spiky" }, // spiky quarter platform
+      { x: 200, y: 180, width: 100, height: 20, moving: true, dx: 2, range: [200, 400] }, // moving platform
+    ],
+    coins: [
+      { x: 170, y: 290, collected: false },
+      { x: 470, y: 170, collected: false },
+      { x: 630, y: 110, collected: false },
+    ],
+    enemies: [
+      { x: 100, y: 340, width: 30, height: 30, dir: 1 },
+      { x: 300, y: 240, width: 30, height: 30, dir: -1 },
+      { x: 500, y: 180, width: 30, height: 30, dir: 1 },
     ]
   }
 ];
@@ -70,8 +94,6 @@ function showLevelCleared(callback) {
   }, 2000);
 }
 
-
-
 function loadLevel(index) {
   const lvl = levels[index];
   player = {
@@ -85,6 +107,7 @@ function loadLevel(index) {
     onGround: false,
   };
   currentLevel = JSON.parse(JSON.stringify(lvl));
+  transitioning = false;
 }
 
 function resetPlayer() {
@@ -96,9 +119,11 @@ function resetPlayer() {
 }
 
 function update() {
+  if (transitioning) return;
+
   if (keys["ArrowLeft"]) player.xSpeed = -3;
   else if (keys["ArrowRight"]) player.xSpeed = 3;
-  else player.xSpeed *= friction;}
+  else player.xSpeed *= friction;
 
   if (keys["Space"] && player.onGround) {
     player.ySpeed = -12;
@@ -106,20 +131,125 @@ function update() {
     player.onGround = false;
   }
 
-  player.yspeed += gravity;
-  player.x += player.xspeed;
-  player.y += player.yspeed;
+  player.ySpeed += gravity;
+  player.x += player.xSpeed;
+  player.y += player.ySpeed;
 
-  player.onground = false;
+  player.onGround = false;
   currentLevel.platforms.forEach(p => {
+    if (p.moving) {
+      p.x += p.dx;
+      if (p.x < p.range[0] || p.x + p.width > p.range[1]) p.dx *= -1;
+    }
+
     if (
       player.x < p.x + p.width &&
       player.x + player.width > p.x &&
       player.y + player.height < p.y + 10 &&
       player.y + player.height + player.ySpeed >= p.y
     ) {
-      player.ySpeed = 0;
-      player.y = p.y - player.height;
-      player.onGround = true;
+      if (p.type === "spiky") {
+        resetPlayer();
+      } else {
+        player.ySpeed = 0;
+        player.y = p.y - player.height;
+        player.onGround = true;
+      }
     }
-  });currentLevel.enemies.forEach
+  });
+
+  currentLevel.enemies.forEach(e => {
+    e.x += e.dir * 2;
+    if (e.x <= 0 || e.x + e.width >= canvas.width) e.dir *= -1;
+
+    if (
+      player.x < e.x + e.width &&
+      player.x + player.width > e.x &&
+      player.y < e.y + e.height &&
+      player.y + player.height > e.y
+    ) {
+      resetPlayer();
+    }
+  });
+
+  currentLevel.coins.forEach(c => {
+    if (!c.collected &&
+      player.x < c.x + 20 &&
+      player.x + player.width > c.x &&
+      player.y < c.y + 20 &&
+      player.y + player.height > c.y
+    ) {
+      c.collected = true;
+      score += 10;
+      coinSound.play();
+    }
+  });
+
+  const goal = currentLevel.goal;
+  if (
+    player.x < goal.x + 30 &&
+    player.x + player.width > goal.x &&
+    player.y < goal.y + 30 &&
+    player.y + player.height > goal.y
+  ) {
+    if (!transitioning) {
+      transitioning = true;
+      goalSound.play();
+      level++;
+      if (level >= levels.length) {
+        alert("🎉 You completed all levels! Final score: " + score);
+        level = 0;
+        score = 0;
+        loadLevel(level);
+      } else {
+        showLevelCleared(() => loadLevel(level));
+      }
+    }
+  }
+
+  if (player.y > canvas.height) resetPlayer();
+}
+
+function draw() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+  ctx.fillStyle = player.color;
+  ctx.fillRect(player.x, player.y, player.width, player.height);
+
+  currentLevel.platforms.forEach(p => {
+    ctx.fillStyle = p.type === "spiky" ? "#ff0000" : "#0077b6";
+    ctx.fillRect(p.x, p.y, p.width, p.height);
+  });
+
+  ctx.fillStyle = "gold";
+  currentLevel.coins.forEach(c => {
+    if (!c.collected) {
+      ctx.beginPath();
+      ctx.arc(c.x + 10, c.y + 10, 10, 0, Math.PI * 2);
+      ctx.fill();
+    }
+  });
+
+  ctx.fillStyle = "#d00000";
+  currentLevel.enemies.forEach(e =>
+    ctx.fillRect(e.x, e.y, e.width, e.height)
+  );
+
+  ctx.fillStyle = "#38b000";
+  ctx.fillRect(currentLevel.goal.x, currentLevel.goal.y, 30, 30);
+  ctx.fillStyle = "white";
+  ctx.fillText("🏁", currentLevel.goal.x + 5, currentLevel.goal.y + 22);
+
+  ctx.fillStyle = "#03045e";
+  ctx.font = "18px Arial";
+  ctx.fillText("Score: " + score, 10, 25);
+}
+
+function gameLoop() {
+  update();
+  draw();
+  requestAnimationFrame(gameLoop);
+}
+
+loadLevel(level);
+gameLoop();
