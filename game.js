@@ -8,12 +8,26 @@ document.addEventListener("keyup", e => keys[e.code] = false);
 const gravity = 0.6;
 const friction = 0.8;
 
+
+const robotImg = new Image();
+robotImg.src = 'images/Robot.png';
+
+const droneImg = new Image();
+droneImg.src = 'images/Drone.png'
+
+const spiderImg = new Image();
+spiderImg.src = 'images/Spider.png'
+
+const spikesImg = new Image();
+spikesImg.src = 'images/Spikes.png';
+
+
 let level = 0;
 let score = 0;
 let transitioning = false;
 
 const levels = [
-  // Level 1
+  // --- Level 1 ---
   {
     playerStart: { x: 50, y: 300 },
     goal: { x: 700, y: 330 },
@@ -28,10 +42,11 @@ const levels = [
       { x: 530, y: 170, collected: false },
     ],
     enemies: [
-      { x: 350, y: 340, width: 30, height: 30, dir: 1 },
+      { x: 350, y: 340, width: 30, height: 30, dir: 1, type: "spider"},
     ]
   },
-  // Level 2
+
+  // --- Level 2 ---
   {
     playerStart: { x: 30, y: 300 },
     goal: { x: 700, y: 150 },
@@ -48,10 +63,11 @@ const levels = [
       { x: 520, y: 130, collected: false },
     ],
     enemies: [
-      { x: 600, y: 340, width: 30, height: 30, dir: -1 },
+      { x: 600, y: 340, width: 30, height: 30, dir: -1, type: "spider" },
     ]
   },
-  // Level 3
+
+  // --- Level 3 ---
   {
     playerStart: { x: 20, y: 300 },
     goal: { x: 750, y: 50 },
@@ -70,42 +86,40 @@ const levels = [
       { x: 630, y: 110, collected: false },
     ],
     enemies: [
-      { x: 100, y: 340, width: 30, height: 30, dir: 1 },
-      { x: 300, y: 240, width: 30, height: 30, dir: -1 },
-      { x: 500, y: 180, width: 30, height: 30, dir: 1 },
+      { x: 100, y: 340, width: 30, height: 30, dir: 1, type: "spider" },
+      { x: 300, y: 240, width: 30, height: 30, dir: -1, type: "drone" },
+      { x: 500, y: 180, width: 30, height: 30, dir: 1, type: "drone" },
     ]
   },
-  // Level 4 (More flying & ground enemies, spikes, platforms)
+
+  // ---  Level 4 ---
   {
-    playerStart: { x: 30, y: 320 },
-    goal: { x: 750, y: 50 },
+    playerStart: { x: 20, y: 300 },
+    goal: { x: 700, y: 80 },
     platforms: [
-      { x: 0, y: 370, width: 800, height: 30 },
-      { x: 100, y: 320, width: 100, height: 20 },
-      { x: 230, y: 270, width: 100, height: 20 },
-      { x: 360, y: 220, width: 100, height: 20 },
-      { x: 490, y: 170, width: 100, height: 20 },
-      { x: 620, y: 120, width: 100, height: 20 },
-      { x: 300, y: 350, width: 50, height: 20, type: "spiky" },
-      { x: 400, y: 300, width: 50, height: 20, type: "spiky" },
-      { x: 520, y: 250, width: 50, height: 20, type: "spiky" },
-      { x: 200, y: 180, width: 100, height: 20, moving: true, dx: 1.5, range: [200, 400] },
-      { x: 550, y: 100, width: 100, height: 20, moving: true, dx: 1.2, range: [550, 750] }
+      { x: 0, y: 370, width: 800, height: 30 },                         // Ground
+      { x: 120, y: 320, width: 100, height: 20 },                       // Static
+      { x: 270, y: 270, width: 100, height: 20 },                       // Static
+      { x: 420, y: 220, width: 100, height: 20 },                       // Static
+      { x: 570, y: 170, width: 100, height: 20 },                       // Static
+      { x: 300, y: 120, width: 100, height: 20, moving: true, dx: 2, range: [300, 500] },  // Moving
+      { x: 200, y: 180, width: 60, height: 20, type: "spiky" },         // Spiky trap
     ],
     coins: [
       { x: 130, y: 290, collected: false },
-      { x: 380, y: 190, collected: false },
-      { x: 650, y: 90, collected: false }
+      { x: 290, y: 240, collected: false },
+      { x: 440, y: 190, collected: false },
+      { x: 590, y: 140, collected: false },
+      { x: 320, y: 90, collected: false },
     ],
     enemies: [
-      { x: 50, y: 340, width: 30, height: 30, dir: 1 },
-      { x: 250, y: 340, width: 30, height: 30, dir: -1 },
-      { x: 420, y: 200, width: 30, height: 30, dir: 1 }, // flying
-      { x: 600, y: 90, width: 30, height: 30, dir: -1 }, // flying
-      { x: 700, y: 340, width: 30, height: 30, dir: 1 }
+      { x: 150, y: 340, width: 30, height: 30, dir: 1, type: "spider" },
+      { x: 350, y: 250, width: 30, height: 30, dir: -1, type: "drone" },
+      { x: 550, y: 190, width: 30, height: 30, dir: 1, type: "drone" },
     ]
   }
 ];
+
 
 let player, currentLevel;
 
@@ -152,8 +166,15 @@ function update() {
   else if (keys["ArrowRight"]) player.xSpeed = 3;
   else player.xSpeed *= friction;
 
+  let inBooster = currentLevel.boostZones?.some(bz =>
+    player.x + player.width > bz.x &&
+    player.x < bz.x + bz.width &&
+    player.y + player.height >= bz.y &&
+    player.y + player.height <= bz.y + bz.height + 5
+  );
+
   if (keys["Space"] && player.onGround) {
-    player.ySpeed = -12;
+    player.ySpeed = inBooster ? -20.4 : -12;
     jumpSound.play();
     player.onGround = false;
   }
@@ -195,7 +216,7 @@ function update() {
       player.y < e.y + e.height &&
       player.y + player.height > e.y
     ) {
-      resetGame();
+      resetGame(); // ⬅⬅⬅ Full game reset on enemy touch
     }
   });
 
@@ -212,35 +233,38 @@ function update() {
     }
   });
 
-  const goal = currentLevel.goal;
-  if (
-    player.x < goal.x + 30 &&
-    player.x + player.width > goal.x &&
-    player.y < goal.y + 30 &&
-    player.y + player.height > goal.y
-  ) {
-    if (!transitioning) {
-      transitioning = true;
-      goalSound.play();
-      document.getElementById("levelCleared").style.display = "block";
+const goal = currentLevel.goal;
+if (
+  player.x < goal.x + 30 &&
+  player.x + player.width > goal.x &&
+  player.y < goal.y + 30 &&
+  player.y + player.height > goal.y
+) {
+  if (!transitioning) {
+    transitioning = true;
+    goalSound.play();
 
-      if (level + 1 >= levels.length) {
-        setTimeout(() => {
-          alert("🎉 You completed all levels! Final score: " + score);
-          level = 0;
-          score = 0;
-          document.getElementById("levelCleared").style.display = "none";
-          loadLevel(level);
-        }, 1500);
-      } else {
-        setTimeout(() => {
-          level++;
-          document.getElementById("levelCleared").style.display = "none";
-          loadLevel(level);
-        }, 1500);
-      }
+    // Show the "Level Cleared" image
+    document.getElementById("levelCleared").style.display = "block";
+
+    level++;
+    if (level >= levels.length) {
+      setTimeout(() => {
+        alert("🎉 You completed all levels! Final score: " + score);
+        level = 0;
+        score = 0;
+        document.getElementById("levelCleared").style.display = "none";
+        loadLevel(level);
+      }, 1500);
+    } else {
+      setTimeout(() => {
+        document.getElementById("levelCleared").style.display = "none";
+        loadLevel(level);
+      }, 1500);
     }
   }
+}
+
 
   if (player.y > canvas.height) resetPlayer();
 }
@@ -248,13 +272,23 @@ function update() {
 function draw() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-  ctx.fillStyle = player.color;
-  ctx.fillRect(player.x, player.y, player.width, player.height);
+  // Draw background
+  ctx.fillStyle = "#1e1e2f";  // Optional sky color
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
 
+  // Draw platforms first
   currentLevel.platforms.forEach(p => {
-    ctx.fillStyle = p.type === "spiky" ? "#ff0000" : "#0077b6";
-    ctx.fillRect(p.x, p.y, p.width, p.height);
+    if (p.type === "spiky") {
+      ctx.drawImage(spikesImg, p.x, p.y, p.width, p.height);
+    } else {
+      ctx.fillStyle = "#888";
+      ctx.fillRect(p.x, p.y, p.width, p.height);
+    }
   });
+
+  // Draw player (robot)
+  ctx.drawImage(robotImg, player.x, player.y, player.width, player.height);
+
 
   ctx.fillStyle = "gold";
   currentLevel.coins.forEach(c => {
@@ -265,10 +299,18 @@ function draw() {
     }
   });
 
-  ctx.fillStyle = "#d00000";
-  currentLevel.enemies.forEach(e =>
-    ctx.fillRect(e.x, e.y, e.width, e.height)
-  );
+currentLevel.enemies.forEach(e => {
+  const sprite = e.type === "drone" ? droneImg : spiderImg;
+  ctx.drawImage(sprite, e.x, e.y, e.width, e.height);
+});
+
+
+  if (currentLevel.boostZones) {
+    currentLevel.boostZones.forEach(bz => {
+      ctx.fillStyle = "rgba(0,255,255,0.6)";
+      ctx.fillRect(bz.x, bz.y, bz.width, bz.height);
+    });
+  }
 
   ctx.fillStyle = "#38b000";
   ctx.fillRect(currentLevel.goal.x, currentLevel.goal.y, 30, 30);
@@ -286,5 +328,9 @@ function gameLoop() {
   requestAnimationFrame(gameLoop);
 }
 
-loadLevel(level);
-gameLoop();
+window.onload = () => {
+  loadLevel(level);
+  gameLoop();
+};
+
+
