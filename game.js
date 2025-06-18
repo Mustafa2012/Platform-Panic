@@ -13,8 +13,8 @@ let score = 0;
 let transitioning = false;
 
 const levels = [
+  // Level 1
   {
-    // Level 1
     playerStart: { x: 50, y: 300 },
     goal: { x: 700, y: 330 },
     platforms: [
@@ -31,8 +31,8 @@ const levels = [
       { x: 350, y: 340, width: 30, height: 30, dir: 1 },
     ]
   },
+  // Level 2
   {
-    // Level 2
     playerStart: { x: 30, y: 300 },
     goal: { x: 700, y: 150 },
     platforms: [
@@ -51,8 +51,8 @@ const levels = [
       { x: 600, y: 340, width: 30, height: 30, dir: -1 },
     ]
   },
+  // Level 3
   {
-    // Level 3
     playerStart: { x: 20, y: 300 },
     goal: { x: 750, y: 50 },
     platforms: [
@@ -61,8 +61,8 @@ const levels = [
       { x: 300, y: 260, width: 100, height: 20 },
       { x: 450, y: 200, width: 100, height: 20 },
       { x: 600, y: 140, width: 100, height: 20 },
-      { x: 400, y: 300, width: 40, height: 20, type: "spiky" }, // spiky quarter platform
-      { x: 200, y: 180, width: 100, height: 20, moving: true, dx: 2, range: [200, 400] }, // moving platform
+      { x: 400, y: 300, width: 40, height: 20, type: "spiky" },
+      { x: 200, y: 180, width: 100, height: 20, moving: true, dx: 2, range: [200, 400] },
     ],
     coins: [
       { x: 170, y: 290, collected: false },
@@ -74,6 +74,36 @@ const levels = [
       { x: 300, y: 240, width: 30, height: 30, dir: -1 },
       { x: 500, y: 180, width: 30, height: 30, dir: 1 },
     ]
+  },
+  // Level 4 (More flying & ground enemies, spikes, platforms)
+  {
+    playerStart: { x: 30, y: 320 },
+    goal: { x: 750, y: 50 },
+    platforms: [
+      { x: 0, y: 370, width: 800, height: 30 },
+      { x: 100, y: 320, width: 100, height: 20 },
+      { x: 230, y: 270, width: 100, height: 20 },
+      { x: 360, y: 220, width: 100, height: 20 },
+      { x: 490, y: 170, width: 100, height: 20 },
+      { x: 620, y: 120, width: 100, height: 20 },
+      { x: 300, y: 350, width: 50, height: 20, type: "spiky" },
+      { x: 400, y: 300, width: 50, height: 20, type: "spiky" },
+      { x: 520, y: 250, width: 50, height: 20, type: "spiky" },
+      { x: 200, y: 180, width: 100, height: 20, moving: true, dx: 1.5, range: [200, 400] },
+      { x: 550, y: 100, width: 100, height: 20, moving: true, dx: 1.2, range: [550, 750] }
+    ],
+    coins: [
+      { x: 130, y: 290, collected: false },
+      { x: 380, y: 190, collected: false },
+      { x: 650, y: 90, collected: false }
+    ],
+    enemies: [
+      { x: 50, y: 340, width: 30, height: 30, dir: 1 },
+      { x: 250, y: 340, width: 30, height: 30, dir: -1 },
+      { x: 420, y: 200, width: 30, height: 30, dir: 1 }, // flying
+      { x: 600, y: 90, width: 30, height: 30, dir: -1 }, // flying
+      { x: 700, y: 340, width: 30, height: 30, dir: 1 }
+    ]
   }
 ];
 
@@ -83,16 +113,6 @@ const jumpSound = new Audio("https://assets.mixkit.co/sfx/download/mixkit-arcade
 const coinSound = new Audio("https://assets.mixkit.co/sfx/download/mixkit-game-coin-2033.wav");
 const hitSound = new Audio("https://assets.mixkit.co/sfx/download/mixkit-retro-arcade-fail-1037.wav");
 const goalSound = new Audio("https://assets.mixkit.co/sfx/download/mixkit-achievement-bell-600.wav");
-
-const levelClearedImg = document.getElementById("levelCleared");
-
-function showLevelCleared(callback) {
-  levelClearedImg.style.display = "block";
-  setTimeout(() => {
-    levelClearedImg.style.display = "none";
-    callback();
-  }, 2000);
-}
 
 function loadLevel(index) {
   const lvl = levels[index];
@@ -115,6 +135,13 @@ function resetPlayer() {
   player.y = currentLevel.playerStart.y;
   player.xSpeed = 0;
   player.ySpeed = 0;
+  hitSound.play();
+}
+
+function resetGame() {
+  level = 0;
+  score = 0;
+  loadLevel(level);
   hitSound.play();
 }
 
@@ -168,7 +195,7 @@ function update() {
       player.y < e.y + e.height &&
       player.y + player.height > e.y
     ) {
-      resetPlayer();
+      resetGame();
     }
   });
 
@@ -195,14 +222,22 @@ function update() {
     if (!transitioning) {
       transitioning = true;
       goalSound.play();
-      level++;
-      if (level >= levels.length) {
-        alert("🎉 You completed all levels! Final score: " + score);
-        level = 0;
-        score = 0;
-        loadLevel(level);
+      document.getElementById("levelCleared").style.display = "block";
+
+      if (level + 1 >= levels.length) {
+        setTimeout(() => {
+          alert("🎉 You completed all levels! Final score: " + score);
+          level = 0;
+          score = 0;
+          document.getElementById("levelCleared").style.display = "none";
+          loadLevel(level);
+        }, 1500);
       } else {
-        showLevelCleared(() => loadLevel(level));
+        setTimeout(() => {
+          level++;
+          document.getElementById("levelCleared").style.display = "none";
+          loadLevel(level);
+        }, 1500);
       }
     }
   }
