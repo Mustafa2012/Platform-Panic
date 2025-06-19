@@ -4,13 +4,47 @@
   box-sizing: border-box;
 }
 body {
-  background: #caf0f8;
+  background: #545f61;
   display: flex;
   justify-content: center;
   align-items: center;
   height: 100vh;
 }
 canvas {
-  border: 3px solid #03045e;
-  background: #ade8f4;
+  border: 3px solid #000000;
+  background: #7a8385;
+}
+
+#startScreen {
+  position: absolute;
+  width: 100%;
+  height:100%;
+  background: linear-gradient(#727279, #282829);
+display: flex;
+flex-direction: column;
+align-items: center;
+justify-content: center;
+z-index: 10;
+color: antiquewhite;
+font-family: 'Arial', sans-serif;
+}
+
+#startScreen h1 {
+  font-size: 48px;
+  margin-bottom: 20px;
+}
+
+#playButton {
+  padding: 12px 28px;
+  font-size: 20px;
+  border: #111111;
+  background-color: #c1c1f7;
+  color: white;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.4s;
+}
+
+#playButton:hover {
+  background-color: #2a323b;
 }

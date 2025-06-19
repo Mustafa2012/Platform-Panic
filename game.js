@@ -117,7 +117,38 @@ const levels = [
       { x: 350, y: 250, width: 30, height: 30, dir: -1, type: "drone" },
       { x: 550, y: 190, width: 30, height: 30, dir: 1, type: "drone" },
     ]
-  }
+  },
+  // --- Level 5 ---
+{
+  playerStart: { x: 20, y: 300 },
+  goal: { x: 750, y: 50 },
+  platforms: [
+    { x: 0, y: 370, width: 800, height: 30 }, // ground
+    { x: 100, y: 320, width: 80, height: 20 },
+    { x: 250, y: 280, width: 100, height: 20 },
+    { x: 420, y: 240, width: 100, height: 20 },
+    { x: 600, y: 200, width: 100, height: 20 },
+    { x: 300, y: 160, width: 80, height: 20, moving: true, dx: 2, range: [300, 500] },
+    { x: 150, y: 120, width: 60, height: 20, type: "spiky" },
+    { x: 500, y: 100, width: 100, height: 20 }
+  ],
+  coins: [
+    { x: 120, y: 290, collected: false },
+    { x: 270, y: 250, collected: false },
+    { x: 440, y: 210, collected: false },
+    { x: 620, y: 170, collected: false },
+    { x: 310, y: 130, collected: false },
+    { x: 520, y: 70, collected: false },
+     
+  ],
+  enemies: [
+    { x: 180, y: 340, width: 30, height: 30, dir: 1, type: "spider" },
+    { x: 370, y: 220, width: 30, height: 30, dir: -1, type: "drone" },
+    { x: 470, y: 320, width: 30, height: 30, dir: 1, type: "drone" },
+    { x: 600, y: 180, width: 30, height: 30, dir: -1, type: "drone" }
+  ]
+}
+ 
 ];
 
 
@@ -317,7 +348,7 @@ currentLevel.enemies.forEach(e => {
   ctx.fillStyle = "white";
   ctx.fillText("🏁", currentLevel.goal.x + 5, currentLevel.goal.y + 22);
 
-  ctx.fillStyle = "#03045e";
+  ctx.fillStyle = "#ffffff";
   ctx.font = "18px Arial";
   ctx.fillText("Score: " + score, 10, 25);
 }
@@ -328,9 +359,15 @@ function gameLoop() {
   requestAnimationFrame(gameLoop);
 }
 
-window.onload = () => {
+document.getElementById("playButton").addEventListener("click", () => {
+  document.getElementById("startScreen").style.display = "none";
   loadLevel(level);
   gameLoop();
-};
+});
+
+
+
+window.onload = () => {
+}
 
 
