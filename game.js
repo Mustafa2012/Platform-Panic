@@ -21,6 +21,11 @@ spiderImg.src = 'images/Spider.png'
 const spikesImg = new Image();
 spikesImg.src = 'images/Spikes.png';
 
+const coinImg = new Image();
+coinImg.src = 'images/BatteryCoin.png';
+
+const goalImg = new Image();
+goalImg.src = 'images/DoorGoal.png';
 
 let level = 0;
 let score = 0;
@@ -204,7 +209,7 @@ function update() {
     player.y + player.height <= bz.y + bz.height + 5
   );
 
-  if (keys["Space"] && player.onGround) {
+  if (keys["Space"] && player.onGround || keys["ArrowUp"] && player.onGround) {
     player.ySpeed = inBooster ? -20.4 : -12;
     jumpSound.play();
     player.onGround = false;
@@ -321,14 +326,11 @@ function draw() {
   ctx.drawImage(robotImg, player.x, player.y, player.width, player.height);
 
 
-  ctx.fillStyle = "gold";
   currentLevel.coins.forEach(c => {
-    if (!c.collected) {
-      ctx.beginPath();
-      ctx.arc(c.x + 10, c.y + 10, 10, 0, Math.PI * 2);
-      ctx.fill();
-    }
-  });
+  if (!c.collected) {
+    ctx.drawImage(coinImg, c.x, c.y, 20, 20);
+  }
+});
 
 currentLevel.enemies.forEach(e => {
   const sprite = e.type === "drone" ? droneImg : spiderImg;
@@ -343,10 +345,8 @@ currentLevel.enemies.forEach(e => {
     });
   }
 
-  ctx.fillStyle = "#38b000";
-  ctx.fillRect(currentLevel.goal.x, currentLevel.goal.y, 30, 30);
-  ctx.fillStyle = "white";
-  ctx.fillText("🏁", currentLevel.goal.x + 5, currentLevel.goal.y + 22);
+  ctx.drawImage(goalImg, currentLevel.goal.x, currentLevel.goal.y, 30, 30);
+
 
   ctx.fillStyle = "#ffffff";
   ctx.font = "18px Arial";
@@ -369,5 +369,4 @@ document.getElementById("playButton").addEventListener("click", () => {
 
 window.onload = () => {
 }
-
 
