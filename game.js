@@ -27,9 +27,16 @@ coinImg.src = 'images/BatteryCoin.png';
 const goalImg = new Image();
 goalImg.src = 'images/DoorGoal.png';
 
+const platformImg = new Image();
+platformImg.src = 'images/Platform.png';
+
+
 let level = 0;
 let score = 0;
 let transitioning = false;
+let levelTimer = 30; // seconds
+let timerInterval = null;
+
 
 const levels = [
   // --- Level 1 ---
@@ -178,6 +185,17 @@ function loadLevel(index) {
   };
   currentLevel = JSON.parse(JSON.stringify(lvl));
   transitioning = false;
+
+  // Reset timer
+  levelTimer = 30;
+  if (timerInterval) clearInterval(timerInterval);
+  timerInterval = setInterval(() => {
+    levelTimer--;
+    if (levelTimer <= 0) {
+      clearInterval(timerInterval);
+      resetGame();
+    }
+  }, 1000);
 }
 
 function resetPlayer() {
@@ -252,7 +270,7 @@ function update() {
       player.y < e.y + e.height &&
       player.y + player.height > e.y
     ) {
-      resetGame(); // ⬅⬅⬅ Full game reset on enemy touch
+      resetGame(); 
     }
   });
 
@@ -279,8 +297,9 @@ if (
   if (!transitioning) {
     transitioning = true;
     goalSound.play();
+    clearInterval(timerInterval);
 
-    // Show the "Level Cleared" image
+
     document.getElementById("levelCleared").style.display = "block";
 
     level++;
@@ -317,9 +336,13 @@ function draw() {
     if (p.type === "spiky") {
       ctx.drawImage(spikesImg, p.x, p.y, p.width, p.height);
     } else {
-      ctx.fillStyle = "#888";
-      ctx.fillRect(p.x, p.y, p.width, p.height);
-    }
+      if (p.y < 370) {
+  ctx.drawImage(platformImg, p.x, p.y, p.width, p.height);
+} else {
+  ctx.fillStyle = "#888"; // keep ground simple
+  ctx.fillRect(p.x, p.y, p.width, p.height);
+}
+  }
   });
 
   // Draw player (robot)
@@ -348,9 +371,16 @@ currentLevel.enemies.forEach(e => {
   ctx.drawImage(goalImg, currentLevel.goal.x, currentLevel.goal.y, 30, 30);
 
 
-  ctx.fillStyle = "#ffffff";
+  ctx.fillStyle = "#00f5d4";
   ctx.font = "18px Arial";
   ctx.fillText("Score: " + score, 10, 25);
+    ctx.fillStyle = "#00f5d4";
+  ctx.font = "18px Arial";
+  ctx.fillText("Score: " + score, 10, 25);
+
+  ctx.fillStyle = "#00f5d4"; 
+  ctx.fillText("Time: " + levelTimer + "s", 700, 25);
+
 }
 
 function gameLoop() {
@@ -358,6 +388,7 @@ function gameLoop() {
   draw();
   requestAnimationFrame(gameLoop);
 }
+
 
 document.getElementById("playButton").addEventListener("click", () => {
   document.getElementById("startScreen").style.display = "none";
@@ -369,4 +400,5 @@ document.getElementById("playButton").addEventListener("click", () => {
 
 window.onload = () => {
 }
+
 
