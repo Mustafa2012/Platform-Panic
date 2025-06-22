@@ -8,6 +8,11 @@ document.addEventListener("keyup", e => keys[e.code] = false);
 const gravity = 0.6;
 const friction = 0.8;
 
+const bgImg = new Image();
+bgImg.src = 'images/GameBackground.png';
+
+const groundImg = new Image();
+groundImg.src = 'images/Groundplatform.png';
 
 const robotImg = new Image();
 robotImg.src = 'images/Robot.png';
@@ -34,11 +39,12 @@ platformImg.src = 'images/Platform.png';
 let level = 0;
 let score = 0;
 let transitioning = false;
-let levelTimer = 30; // seconds
+let levelTimer = 20; 
 let timerInterval = null;
 
 
 const levels = [
+
   // --- Level 1 ---
   {
     playerStart: { x: 50, y: 300 },
@@ -135,7 +141,7 @@ const levels = [
   playerStart: { x: 20, y: 300 },
   goal: { x: 750, y: 50 },
   platforms: [
-    { x: 0, y: 370, width: 800, height: 30 }, // ground
+    { x: 0, y: 370, width: 800, height: 30 }, 
     { x: 100, y: 320, width: 80, height: 20 },
     { x: 250, y: 280, width: 100, height: 20 },
     { x: 420, y: 240, width: 100, height: 20 },
@@ -186,8 +192,8 @@ function loadLevel(index) {
   currentLevel = JSON.parse(JSON.stringify(lvl));
   transitioning = false;
 
-  // Reset timer
-  levelTimer = 30;
+  
+  levelTimer = 20;
   if (timerInterval) clearInterval(timerInterval);
   timerInterval = setInterval(() => {
     levelTimer--;
@@ -327,11 +333,12 @@ if (
 function draw() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-  // Draw background
-  ctx.fillStyle = "#1e1e2f";  // Optional sky color
-  ctx.fillRect(0, 0, canvas.width, canvas.height);
+  ctx.drawImage(bgImg, 0, 0, canvas.width, canvas.height);
+ctx.drawImage(bgImg, 0, 0, canvas.width, canvas.height);
 
-  // Draw platforms first
+  
+
+  
   currentLevel.platforms.forEach(p => {
     if (p.type === "spiky") {
       ctx.drawImage(spikesImg, p.x, p.y, p.width, p.height);
@@ -339,13 +346,14 @@ function draw() {
       if (p.y < 370) {
   ctx.drawImage(platformImg, p.x, p.y, p.width, p.height);
 } else {
-  ctx.fillStyle = "#888"; // keep ground simple
+  ctx.fillStyle =       ctx.fillStyle = "rgba(27, 54, 54, 0.6)";
   ctx.fillRect(p.x, p.y, p.width, p.height);
 }
   }
   });
 
-  // Draw player (robot)
+  
+  
   ctx.drawImage(robotImg, player.x, player.y, player.width, player.height);
 
 
@@ -400,5 +408,4 @@ document.getElementById("playButton").addEventListener("click", () => {
 
 window.onload = () => {
 }
-
 

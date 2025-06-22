@@ -4,7 +4,7 @@
   box-sizing: border-box;
 }
 body {
-  background: #545f61;
+  background: #05333b;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -54,4 +54,51 @@ font-family: 'Arial', sans-serif;
   box-shadow: 0 0 20px #00ffff, 0 0 60px #00ffff inset;
   transform: scale(1.05);
 }
+
+
+/* Ensure full-screen layout */
+html, body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  overflow: hidden;
+}
+
+/* Make canvas fill the screen too */
+
+
+#startScreen {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-image: url("images/startBackground.png"); 
+  background-size: cover;
+  background-position: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  z-index: 10;
+}
+
+/* Game logo */
+#gameLogo {
+  width: 400px;
+  margin-bottom: 20px;
+}
+
+/* Play button style */
+#playButton {
+  font-size: 40px;
+  padding: 14px 36px;
+  background-color: #00f5d4;
+  color: #000;
+  border: none;
+  border-radius: 10px;
+  box-shadow: 0 0 10px #00f5d4;
+  cursor: pointer;
+}
+
 
