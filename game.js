@@ -169,13 +169,149 @@ const levels = [
  
 ];
 
+const round2Levels = [
+  // Level 1
+  {
+    playerStart: { x: 50, y: 300 },
+    goal: { x: 700, y: 330, locked: true },
+    key: { x: 100, y: 250 },
+    platforms: [
+      { x: 0, y: 370, width: 800, height: 30 },
+      { x: 150, y: 300, width: 100, height: 20 },
+      { x: 300, y: 250, width: 100, height: 20 },
+      { x: 500, y: 200, width: 100, height: 20 },
+    ],
+    coins: [
+      { x: 170, y: 270, collected: false },
+      { x: 530, y: 170, collected: false },
+    ],
+    enemies: [
+      { x: 350, y: 340, width: 30, height: 30, dir: 1, type: "spider" }
+    ]
+  },
+
+  // Level 2 - Adds lasers
+  {
+    playerStart: { x: 30, y: 300 },
+    goal: { x: 700, y: 150, locked: true },
+    key: { x: 150, y: 200 },
+    platforms: [
+      { x: 0, y: 370, width: 800, height: 30 },
+      { x: 100, y: 320, width: 100, height: 20 },
+      { x: 250, y: 260, width: 100, height: 20 },
+      { x: 400, y: 210, width: 100, height: 20 },
+      { x: 550, y: 160, width: 100, height: 20 },
+    ],
+    coins: [
+      { x: 120, y: 290, collected: false },
+      { x: 380, y: 180, collected: false },
+      { x: 580, y: 130, collected: false },
+    ],
+    enemies: [
+      { x: 600, y: 340, width: 30, height: 30, dir: -1, type: "drone" }
+    ],
+    lasers: [
+      { x: 200, y: 350, width: 5, height: 40, on: true, interval: 60 }
+    ]
+  },
+
+  // Level 3 - More lasers and enemies
+  {
+    playerStart: { x: 20, y: 300 },
+    goal: { x: 750, y: 50, locked: true },
+    key: { x: 300, y: 260 },
+    platforms: [
+      { x: 0, y: 370, width: 800, height: 30 },
+      { x: 150, y: 320, width: 100, height: 20 },
+      { x: 300, y: 260, width: 100, height: 20 },
+      { x: 450, y: 200, width: 100, height: 20 },
+      { x: 600, y: 140, width: 100, height: 20 },
+    ],
+    coins: [
+      { x: 170, y: 290, collected: false },
+      { x: 470, y: 170, collected: false },
+      { x: 630, y: 110, collected: false },
+    ],
+    enemies: [
+      { x: 300, y: 240, width: 30, height: 30, dir: -1, type: "spider" }
+    ],
+    lasers: [
+      { x: 350, y: 280, width: 5, height: 60, on: true, interval: 80 },
+      { x: 500, y: 180, width: 5, height: 60, on: true, interval: 100 }
+    ]
+  },
+
+  // Level 4 - Adds disappearing platform
+  {
+    playerStart: { x: 50, y: 300 },
+    goal: { x: 700, y: 80, locked: true },
+    key: { x: 400, y: 220 },
+    platforms: [
+      { x: 0, y: 370, width: 800, height: 30 },
+      { x: 120, y: 320, width: 100, height: 20 },
+      { x: 270, y: 270, width: 100, height: 20 },
+      { x: 420, y: 220, width: 100, height: 20 },
+      { x: 570, y: 170, width: 100, height: 20 },
+      { x: 600, y: 120, width: 100, height: 20, disappearAfter: 120 },
+      { x: 600, y: 140, width: 100, height: 20, type: "spiky" }
+    ],
+    coins: [
+      { x: 130, y: 290, collected: false },
+      { x: 290, y: 240, collected: false },
+      { x: 440, y: 190, collected: false },
+    ],
+    enemies: [
+      { x: 550, y: 190, width: 30, height: 30, dir: 1, type: "drone" }
+    ],
+    lasers: [
+      { x: 200, y: 350, width: 5, height: 40, on: true, interval: 70 }
+    ]
+  },
+
+  // Level 5 - Most difficult
+  {
+    playerStart: { x: 20, y: 300 },
+    goal: { x: 750, y: 50, locked: true },
+    key: { x: 250, y: 280 },
+    platforms: [
+      { x: 0, y: 370, width: 800, height: 30 },
+      { x: 100, y: 320, width: 80, height: 20 },
+      { x: 250, y: 280, width: 100, height: 20 },
+      { x: 420, y: 240, width: 100, height: 20 },
+      { x: 600, y: 200, width: 100, height: 20, disappearAfter: 120 },
+      { x: 150, y: 160, width: 60, height: 20, type: "spiky" },
+      { x: 500, y: 100, width: 100, height: 20 }
+    ],
+    coins: [
+      { x: 120, y: 290, collected: false },
+      { x: 270, y: 250, collected: false },
+      { x: 440, y: 210, collected: false },
+    ],
+    enemies: [
+      { x: 180, y: 340, width: 30, height: 30, dir: 1, type: "spider" },
+      { x: 470, y: 320, width: 30, height: 30, dir: 1, type: "drone" }
+    ],
+    lasers: [
+      { x: 300, y: 330, width: 5, height: 50, on: true, interval: 60 },
+      { x: 600, y: 180, width: 5, height: 60, on: true, interval: 90 }
+    ]
+  }
+];
+
 
 let player, currentLevel;
 
-const jumpSound = new Audio("https://assets.mixkit.co/sfx/download/mixkit-arcade-game-jump-coin-216.wav");
-const coinSound = new Audio("https://assets.mixkit.co/sfx/download/mixkit-game-coin-2033.wav");
-const hitSound = new Audio("https://assets.mixkit.co/sfx/download/mixkit-retro-arcade-fail-1037.wav");
-const goalSound = new Audio("https://assets.mixkit.co/sfx/download/mixkit-achievement-bell-600.wav");
+const jumpSound = new Audio;
+jumpSound.src = 'Sound/JumpSound.wav';
+
+const coinSound = new Audio;
+coinSound.src = 'Sound/CoinSound.wav';
+
+const hitSound = new Audio;
+hitSound.src = 'Sound/HitSound.wav';
+
+const goalSound = new Audio;
+goalSound.src = 'Sound/GoalSound.wav'
 
 function loadLevel(index) {
   const lvl = levels[index];
@@ -398,11 +534,22 @@ function gameLoop() {
 }
 
 
+function selectRound(roundNumber) {
+  if (roundNumber === 1) {
+    document.getElementById("roundScreen").style.display = "none";
+    loadLevel(0); 
+    gameLoop();
+  } else {
+    alert("🔒 This round is locked. Complete previous rounds to unlock!");
+  }
+}
+
 document.getElementById("playButton").addEventListener("click", () => {
   document.getElementById("startScreen").style.display = "none";
-  loadLevel(level);
-  gameLoop();
+  document.getElementById("roundScreen").style.display = "flex";
 });
+
+
 
 
 

@@ -12,6 +12,33 @@
   <br>
   <button id="playButton">Play</button>
 </div>
+<div id="roundScreen" style="display:none;">
+  <h1>Select a Round</h1>
+  <div class="round-container">
+   
+    <div class="round-node unlocked" onclick="selectRound(1)">
+      <div class="circle">1</div>
+      <p>Training Grounds</p>
+      <span class="progress">5/5</span>
+    </div>
+
+    
+    <div class="wire"></div>
+    <div class="round-node locked">
+      <div class="circle">🔒</div>
+      <p>Robot Factory</p>
+      <span class="progress">0/5</span>
+    </div>
+
+  
+    <div class="wire"></div>
+    <div class="round-node locked">
+      <div class="circle">🔒</div>
+      <p>Sky Fortress</p>
+      <span class="progress">0/5</span>
+    </div>
+  </div>
+</div>
 
 
   <canvas id="game" width="800"   height="400"></canvas>

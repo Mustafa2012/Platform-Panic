@@ -102,3 +102,58 @@ html, body {
 }
 
 
+#roundScreen {
+  position: absolute;
+  top: 0; left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: linear-gradient(to right, #4b636d, #203a43, #2c5364);
+  color: white;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.round-container {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.round-node {
+  text-align: center;
+  width: 120px;
+}
+
+.circle {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background: #399b9c;
+  color: black;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  font-size: 24px;
+  margin: 0 auto 10px auto;
+}
+
+.round-node.locked .circle {
+  background: #094850;
+  color: white;
+  cursor: not-allowed;
+}
+
+.round-node.unlocked:hover .circle {
+  background: #44d3b6;
+  cursor: pointer;
+}
+
+.wire {
+  width: 60px;
+  height: 2px;
+  background: #ccc;
+}
+
