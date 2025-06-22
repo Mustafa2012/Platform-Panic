@@ -305,7 +305,7 @@ const jumpSound = new Audio;
 jumpSound.src = 'Sound/JumpSound.wav';
 
 const coinSound = new Audio;
-coinSound.src = 'Sound/CoinSound.wav';
+coinSound.src = 'Sound/CoinSound.mp3';
 
 const hitSound = new Audio;
 hitSound.src = 'Sound/HitSound.wav';
@@ -521,6 +521,7 @@ currentLevel.enemies.forEach(e => {
     ctx.fillStyle = "#00f5d4";
   ctx.font = "18px Arial";
   ctx.fillText("Score: " + score, 10, 25);
+ctx.fillText("Level: " + (level + 1), 360, 25);
 
   ctx.fillStyle = "#00f5d4"; 
   ctx.fillText("Time: " + levelTimer + "s", 700, 25);
