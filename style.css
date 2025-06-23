@@ -75,7 +75,7 @@ html, body {
   left: 0;
   width: 100vw;
   height: 100vh;
-  background-image: url("images/startBackground.png"); 
+  background-image: url("Images/startBackground.png"); 
   background-size: cover;
   background-position: center;
   display: flex;
