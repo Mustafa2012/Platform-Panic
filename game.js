@@ -554,6 +554,5 @@ document.getElementById("playButton").addEventListener("click", () => {
 
 
 
-window.onload = () => {
-}
+window.onload = () => {}
 
