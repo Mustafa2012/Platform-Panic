@@ -110,7 +110,7 @@ html, body {
   width: 100vw;
   height: 100vh;
   background: linear-gradient(to right, #4b636d, #203a43, #2c5364);
-  color: white;
+  color: rgb(7, 118, 151);
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -129,8 +129,8 @@ html, body {
 }
 
 .circle {
-  width: 60px;
-  height: 60px;
+  width: 120px;
+  height: 120px;
   border-radius: 50%;
   background: #399b9c;
   color: black;
@@ -138,7 +138,7 @@ html, body {
   align-items: center;
   justify-content: center;
   font-weight: bold;
-  font-size: 24px;
+  font-size: 60px;
   margin: 0 auto 10px auto;
 }
 
