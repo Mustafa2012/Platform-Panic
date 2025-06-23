@@ -9,31 +9,31 @@ const gravity = 0.6;
 const friction = 0.8;
 
 const bgImg = new Image();
-bgImg.src = 'images/GameBackground.png';
+bgImg.src = 'Images/GameBackground.png';
 
 const groundImg = new Image();
-groundImg.src = 'images/Groundplatform.png';
+groundImg.src = 'Images/Groundplatform.png';
 
 const robotImg = new Image();
-robotImg.src = 'images/Robot.png';
+robotImg.src = 'Images/Robot.png';
 
 const droneImg = new Image();
-droneImg.src = 'images/Drone.png'
+droneImg.src = 'Images/Drone.png'
 
 const spiderImg = new Image();
-spiderImg.src = 'images/Spider.png'
+spiderImg.src = 'Images/Spider.png'
 
 const spikesImg = new Image();
-spikesImg.src = 'images/Spikes.png';
+spikesImg.src = 'Images/Spikes.png';
 
 const coinImg = new Image();
-coinImg.src = 'images/BatteryCoin.png';
+coinImg.src = 'Images/BatteryCoin.png';
 
 const goalImg = new Image();
-goalImg.src = 'images/DoorGoal.png';
+goalImg.src = 'Images/DoorGoal.png';
 
 const platformImg = new Image();
-platformImg.src = 'images/Platform.png';
+platformImg.src = 'Images/Platform.png';
 
 
 let level = 0;
