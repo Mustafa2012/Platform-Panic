@@ -26,7 +26,7 @@ align-items: center;
 justify-content: center;
 z-index: 10;
 color: antiquewhite;
-font-family: 'Arial', sans-serif;
+font-family: 'Courier New', Courier, monospace;
 }
 
 #startScreen h1 {
@@ -46,6 +46,8 @@ font-family: 'Arial', sans-serif;
   letter-spacing: 2px;
   cursor: pointer;
   transition: all 0.3s ease;
+  font-family: 'Courier New', Courier, monospace;
+  font-weight: bold;
 }
 
 #playButton:hover {

@@ -516,10 +516,10 @@ currentLevel.enemies.forEach(e => {
 
 
   ctx.fillStyle = "#00f5d4";
-  ctx.font = "18px Arial";
+  ctx.font = "18px Courier";
   ctx.fillText("Score: " + score, 10, 25);
     ctx.fillStyle = "#00f5d4";
-  ctx.font = "18px Arial";
+  ctx.font = "18px Courier";
   ctx.fillText("Score: " + score, 10, 25);
 ctx.fillText("Level: " + (level + 1), 360, 25);
 
