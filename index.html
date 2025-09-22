@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -7,26 +8,32 @@
 </head>
 <body>
   
- <div id="startScreen">
+<div id="startScreen">
   <img src="Images/Logo.png" alt="Platform Panic Logo" id="gameLogo">
-  <br>
   <button id="playButton">Play</button>
 </div>
+
 <div id="roundScreen" style="display:none;">
-  <h1>Select a Round</h1>
+  <h2>Select Round</h2>
   <div class="round-container">
    
     <div class="round-node unlocked" onclick="selectRound(1)">
       <div class="circle">1</div>
-      <p>Robot Factory</p>
+      <p>Training Grounds</p>
       <span class="progress">5/5</span>
     </div>
 
     
+    <div class="round-node locked" onclick="selectRound(2)">
+      <div class="circle">2</div>
+      <p>Robot Factory</p>
+      <span class="progress">0/5</span>
     </div>
   </div>
 </div>
 
+    
+  
 
 
   <canvas id="game" width="800"   height="400"></canvas>
@@ -37,4 +44,4 @@
      style="display:none; position:absolute; top:150px; left:350px; width:100px; z-index:1000;">
 
 </body>
-</html>
+</html>.  

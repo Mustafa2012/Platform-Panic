@@ -58,7 +58,7 @@ font-family: 'Courier New', Courier, monospace;
 }
 
 
-/* Ensure full-screen layout */
+
 html, body {
   margin: 0;
   padding: 0;
@@ -66,7 +66,7 @@ html, body {
   overflow: hidden;
 }
 
-/* Make canvas fill the screen too */
+
 
 
 #startScreen {
@@ -85,77 +85,108 @@ html, body {
   z-index: 10;
 }
 
-/* Game logo */
+
 #gameLogo {
   width: 400px;
   margin-bottom: 20px;
 }
 
-/* Play button style */
-#playButton {
-  font-size: 40px;
-  padding: 14px 36px;
-  background-color: #00f5d4;
-  color: #000;
-  border: none;
-  border-radius: 10px;
-  box-shadow: 0 0 10px #00f5d4;
-  cursor: pointer;
-}
+
+
+
 
 
 #roundScreen {
   position: absolute;
-  top: 0; left: 0;
-  width: 100vw;
-  height: 100vh;
-  background: linear-gradient(to right, #4b636d, #203a43, #2c5364);
-  color: rgb(7, 118, 151);
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: #05333b;
   display: flex;
   flex-direction: column;
-  align-items: center;
   justify-content: center;
+  align-items: center;
 }
+
+
+#roundScreen h2 {
+  color: #0b96a2;
+  margin-bottom: 60px;
+  font-size: 36px;
+  font-family: "Courier New", monospace;
+}
+
 
 .round-container {
   display: flex;
+  gap: 120px;
   align-items: center;
-  gap: 20px;
+  position: relative;
 }
+
+
+.round-container::before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 80px;
+  right: 80px;
+  height: 4px;
+  background: #00ffff;
+  z-index: 0;
+  opacity: 0.6;
+}
+
 
 .round-node {
-  text-align: center;
-  width: 120px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  z-index: 1;
+  cursor: pointer;
+  transition: 0.3s;
 }
 
+
+
+
 .circle {
-  width: 120px;
-  height: 120px;
+  width: 90px;
+  height: 90px;
   border-radius: 50%;
-  background: #399b9c;
+  background:#014d4e;
   color: black;
+  font-size: 30px;
+  font-weight: bold;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-weight: bold;
-  font-size: 60px;
-  margin: 0 auto 10px auto;
+  margin-bottom: 10px;
+  box-shadow: 0 0 20px #00ffff;
 }
 
-.round-node.locked .circle {
-  background: #094850;
+.circle:hover {
+  background: #00ffff;
+  color: #014d4e;
+  box-shadow: 0 0 20px #00ffff, 0 0 60px #00ffff inset;
+  transform: scale(1.05);
+}
+.round-node p {
+  margin: 5px 0;
+  font-size: 18px;
   color: white;
-  cursor: not-allowed;
+  font-family: "Courier New", monospace;
 }
 
-.round-node.unlocked:hover .circle {
-  background: #44d3b6;
-  cursor: pointer;
-}
 
-.wire {
-  width: 60px;
-  height: 2px;
-  background: #ccc;
-}
 
+
+
+
+
+
+
+
+
+  
