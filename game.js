@@ -271,14 +271,14 @@ const round2Levels = [
 ];
 
 let player, currentLevel;
-
+   
 
 function showRoundScreen() {
   document.getElementById("startScreen").style.display = "none";
   document.getElementById("roundScreen").style.display = "flex";
 }
 
-// Called when player chooses a round
+
 function selectRound(round) {
   currentRound = round;
   level = 0;
@@ -304,7 +304,7 @@ const goalSound = new Audio;
 goalSound.src = 'Sound/GoalSound.wav'
 
 let currentRound = 1;
-let allLevels = round1Levels; // Default to round 1
+let allLevels = round1Levels; 
 
 function loadLevel(index) {
   const levels = currentRound === 1 ? round1Levels : round2Levels; 
@@ -324,16 +324,14 @@ function loadLevel(index) {
   currentLevel = JSON.parse(JSON.stringify(lvl));
   transitioning = false;
 
-  // --- Portal rules ---
-  // Round 1 → portal is always open
-  // Round 2 → portal starts locked, unlocks when all coins are collected
+  
   if (currentRound === 1) {
     portalUnlocked = true;
   } else {
-    portalUnlocked = false; // wait until coins are collected
+    portalUnlocked = false; 
   }
 
-  // --- Reset level timer ---
+
   levelTimer = 20;
   if (timerInterval) clearInterval(timerInterval);
   timerInterval = setInterval(() => {
@@ -378,12 +376,12 @@ function resetGame() {
 function update() {
   if (transitioning) return;
 
-  // --- Player horizontal movement ---
+
   if (keys["ArrowLeft"]) player.xSpeed = -3;
   else if (keys["ArrowRight"]) player.xSpeed = 3;
   else player.xSpeed *= friction;
 
-  // --- Check if in booster zone ---
+
   let inBooster = currentLevel.boostZones?.some(bz =>
     player.x + player.width > bz.x &&
     player.x < bz.x + bz.width &&
@@ -391,19 +389,19 @@ function update() {
     player.y + player.height <= bz.y + bz.height + 5
   );
 
-  // --- Jump ---
+
   if ((keys["Space"] && player.onGround) || (keys["ArrowUp"] && player.onGround)) {
     player.ySpeed = inBooster ? -20.4 : -12;
     jumpSound.play();
     player.onGround = false;
   }
 
-  // --- Apply gravity and move player ---
+
   player.ySpeed += gravity;
   player.x += player.xSpeed;
   player.y += player.ySpeed;
 
-  // --- Platform collisions ---
+
   player.onGround = false;
   currentLevel.platforms.forEach(p => {
     if (p.moving) {
@@ -427,7 +425,7 @@ function update() {
     }
   });
 
-  // --- Enemy collisions ---
+
   currentLevel.enemies.forEach(e => {
     e.x += e.dir * 2;
     if (e.x <= 0 || e.x + e.width >= canvas.width) e.dir *= -1;
@@ -442,7 +440,7 @@ function update() {
     }
   });
 
-  // --- Coin collection ---
+
   currentLevel.coins.forEach(c => {
     if (!c.collected &&
       player.x < c.x + 20 &&
@@ -456,7 +454,7 @@ function update() {
     }
   });
 
-  // --- Unlock portal if needed ---
+
   if (currentLevel.goal.locked && !portalUnlocked) {
     const allCollected = currentLevel.coins.every(c => c.collected);
     if (allCollected) {
@@ -477,7 +475,7 @@ function update() {
 
     document.getElementById("levelCleared").style.display = "block";
 
-    // ✅ Mark level complete
+
     if (currentRound === 1) completedLevels.round1[level] = true;
     if (currentRound === 2) completedLevels.round2[level] = true;
 
@@ -488,7 +486,7 @@ function update() {
       setTimeout(() => {
         alert("🎉 You completed all levels in Round " + currentRound);
         document.getElementById("levelCleared").style.display = "none";
-        // return to round screen instead of resetting
+
         showRoundScreen();
       }, 1500);
     } else {
@@ -582,11 +580,6 @@ let completedLevels = {
   round1: [false, false, false, false, false],
   round2: [false, false, false, false, false]
 };
-
-
-
-
-
 
 
 window.onload = () => {
