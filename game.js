@@ -285,9 +285,12 @@ function selectRound(round) {
   allLevels = currentRound === 1 ? round1Levels : round2Levels;
   document.getElementById("roundScreen").style.display = "none";
   document.getElementById("game").style.display = "block";
+  document.getElementById("controls").style.display = "flex";  
+
   loadLevel(level);
   gameLoop();
 }
+
 
 
 
@@ -551,7 +554,7 @@ function draw() {
     });
   }
 
-  
+     
   if (portalUnlocked) {
     ctx.drawImage(goalImg, currentLevel.goal.x, currentLevel.goal.y, 30, 30);
   } else {
@@ -561,19 +564,29 @@ function draw() {
     ctx.globalAlpha = 1;
   }
 
- 
-  ctx.fillStyle = "#00f5d4";
-  ctx.font = "18px Courier";
-  ctx.fillText("Score: " + score, 10, 25);
-  ctx.fillText("Level: " + (level + 1), 360, 25);
-  ctx.fillText("Time: " + levelTimer + "s", 700, 25);
-}
+
+ ctx.fillStyle = "#00f5d4";  
+ctx.font = "18px Courier";
+ctx.fillText("Round: " + currentRound, 250, 25);
+ctx.fillText("Score: " + score, 10, 25);
+ctx.fillText("Level: " + (level + 1), 460, 25);
+ctx.fillText("Time: " + levelTimer + "s", 700, 25);
+}                       
+
+
+
+
+
+
+
+
 
 function gameLoop() {
   update();
   draw();
   requestAnimationFrame(gameLoop);
 }
+        
 
 
 let completedLevels = {
@@ -581,11 +594,60 @@ let completedLevels = {
   round2: [false, false, false, false, false]
 };
 
+function setupMobileControls() {
+  const leftBtn = document.getElementById("leftBtn");
+  const rightBtn = document.getElementById("rightBtn");
+  const jumpBtn = document.getElementById("jumpBtn");
+
+  function press(key) {
+    keys[key] = true;
+  }
+  function release(key) {
+    keys[key] = false;
+  }
+
+  
+  leftBtn.addEventListener("mousedown", () => press("ArrowLeft"));
+  leftBtn.addEventListener("mouseup", () => release("ArrowLeft"));
+  leftBtn.addEventListener("mouseleave", () => release("ArrowLeft")); // stop if mouse leaves
+  leftBtn.addEventListener("touchstart", e => { e.preventDefault(); press("ArrowLeft"); });
+  leftBtn.addEventListener("touchend", () => release("ArrowLeft"));
+
+  
+  rightBtn.addEventListener("mousedown", () => press("ArrowRight"));
+  rightBtn.addEventListener("mouseup", () => release("ArrowRight"));
+  rightBtn.addEventListener("mouseleave", () => release("ArrowRight"));
+  rightBtn.addEventListener("touchstart", e => { e.preventDefault(); press("ArrowRight"); });
+  rightBtn.addEventListener("touchend", () => release("ArrowRight"));
+
+  
+  jumpBtn.addEventListener("mousedown", () => press("Space"));
+  jumpBtn.addEventListener("mouseup", () => release("Space"));
+  jumpBtn.addEventListener("mouseleave", () => release("Space"));
+  jumpBtn.addEventListener("touchstart", e => { e.preventDefault(); press("Space"); });
+  jumpBtn.addEventListener("touchend", () => release("Space"));
+}
 
 window.onload = () => {
   document.getElementById("playButton").addEventListener("click", () => {
-    showRoundScreen();
+    document.getElementById("startScreen").style.display = "none";
+    document.getElementById("roundScreen").style.display = "flex";
   });
+
+  setupMobileControls(); 
 };
 
+function startGame() {
+  document.getElementById("startScreen").style.display = "none";
+  document.getElementById("roundScreen").style.display = "none";
+  document.getElementById("controls").style.display = "flex"; 
+  canvas.style.display = "block";
+  loadLevel(currentLevel);
+}
 
+
+function returnToMenu() {
+  document.getElementById("controls").style.display = "none"; 
+  document.getElementById("roundScreen").style.display = "flex";
+  canvas.style.display = "none";
+}
