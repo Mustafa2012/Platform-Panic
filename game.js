@@ -575,12 +575,6 @@ ctx.fillText("Time: " + levelTimer + "s", 700, 25);
 
 
 
-
-
-
-
-
-
 function gameLoop() {
   update();
   draw();
