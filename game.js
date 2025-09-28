@@ -292,8 +292,6 @@ function selectRound(round) {
 }
 
 
-
-
 const jumpSound = new Audio;
 jumpSound.src = 'Sound/JumpSound.wav';
 

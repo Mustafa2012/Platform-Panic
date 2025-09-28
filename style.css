@@ -93,9 +93,6 @@ html, body {
 
 
 
-
-
-
 #roundScreen {
   position: absolute;
   top: 0;
@@ -180,49 +177,7 @@ html, body {
 }
 
 
-#controls {
-  display: none;  
-  position: fixed;
-  bottom: 20px;
-  width: 100%;
-  justify-content: space-between;
-  pointer-events: auto;
-  z-index: 100;
-}
-
-
-#leftBtn, #rightBtn {
-  width: 60px;
-  height: 60px;
-  font-size: 24px;
-  margin: 0 5px;
-  border-radius: 50%;
-  background: rgba(0, 245, 212, 0.6);
-  border: none;
-  pointer-events: auto;
-}
-
-#jumpBtn {
-  width: 80px;
-  height: 80px;
-  font-size: 28px;
-  border-radius: 50%;
-  background: rgba(255, 0, 110, 0.7);
-  border: none;
-  pointer-events: auto;
-}
-
-#controls button:active {
-  background: rgba(255, 255, 255, 0.8);
-}
-
-
-
-
-
-
-
-
 
 
   
+
