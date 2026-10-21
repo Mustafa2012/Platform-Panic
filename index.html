@@ -40,7 +40,10 @@
 
 
 
-  <canvas id="game" width="800"   height="400"></canvas>
+  <div id="gameArea">
+    <canvas id="game" width="800"   height="400"></canvas>
+    <button id="soundToggle" type="button" aria-label="Mute sound" title="Mute sound" aria-pressed="false">🔊</button>
+  </div>
   <img id="levelCleared" src="LevelCleared.png" style="display:none; position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); z-index:10; width:300px;">
   <script src="game.js"></script>
 <img id="levelCleared" 

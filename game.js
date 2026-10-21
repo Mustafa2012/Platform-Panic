@@ -39,9 +39,16 @@ platformImg.src = 'Images/Platform.png';
 let level = 0;
 let score = 0;
 let transitioning = false;
+let isPaused = false;
 let levelTimer = 20; 
 let timerInterval = null;
+const frameDuration = 1000 / 60;
+let previousFrameTime = null;
+let frameAccumulator = 0;
+let gameLoopStarted = false;
+const platformSurfaceOffset = 7;
 
+window.addEventListener("blur", () => keys = {});
 
 
 
@@ -49,7 +56,7 @@ let timerInterval = null;
 const round1Levels = [
   {
     playerStart: { x: 50, y: 300 },
-    goal: { x: 700, y: 330 },
+    goal: { x: 700, y: 343 },
     platforms: [
       { x: 0, y: 370, width: 800, height: 30 },
       { x: 150, y: 300, width: 120, height: 20 },
@@ -156,7 +163,7 @@ const round1Levels = [
 const round2Levels = [
   {
     playerStart: { x: 50, y: 300 },
-    goal: { x: 700, y: 330, locked: true },
+    goal: { x: 700, y: 343, locked: true },
     platforms: [
       { x: 0, y: 370, width: 800, height: 30 },
       { x: 150, y: 300, width: 120, height: 20 },
@@ -276,6 +283,8 @@ let player, currentLevel;
 function showRoundScreen() {
   document.getElementById("startScreen").style.display = "none";
   document.getElementById("roundScreen").style.display = "flex";
+  document.getElementById("gameArea").style.display = "none";
+  document.getElementById("soundToggle").style.display = "none";
 }
 
 
@@ -284,11 +293,16 @@ function selectRound(round) {
   level = 0;
   allLevels = currentRound === 1 ? round1Levels : round2Levels;
   document.getElementById("roundScreen").style.display = "none";
+  document.getElementById("gameArea").style.display = "block";
   document.getElementById("game").style.display = "block";
   document.getElementById("controls").style.display = "flex";  
+  document.getElementById("soundToggle").style.display = "block";
 
   loadLevel(level);
-  gameLoop();
+  if (!gameLoopStarted) {
+    gameLoopStarted = true;
+    gameLoop();
+  }
 }
 
 
@@ -303,6 +317,9 @@ hitSound.src = 'Sound/HitSound.wav';
 
 const goalSound = new Audio;
 goalSound.src = 'Sound/GoalSound.wav'
+
+const soundEffects = [jumpSound, coinSound, hitSound, goalSound];
+let isMuted = false;
 
 let currentRound = 1;
 let allLevels = round1Levels; 
@@ -324,6 +341,7 @@ function loadLevel(index) {
 
   currentLevel = JSON.parse(JSON.stringify(lvl));
   transitioning = false;
+  isPaused = false;
 
   
   if (currentRound === 1) {
@@ -336,6 +354,7 @@ function loadLevel(index) {
   levelTimer = 20;
   if (timerInterval) clearInterval(timerInterval);
   timerInterval = setInterval(() => {
+    if (isPaused) return;
     levelTimer--;
     if (levelTimer <= 0) {
       clearInterval(timerInterval);
@@ -343,23 +362,10 @@ function loadLevel(index) {
     }
   }, 1000);
 }
-    
-
-  transitioning = false;
-  levelTimer = 20;
-  if (timerInterval) clearInterval(timerInterval);
-  timerInterval = setInterval(() => {
-    levelTimer--;
-    if (levelTimer <= 0) {
-      clearInterval(timerInterval);
-      resetGame();
-    }
-  }, 1000);
-
-
 
 
 function resetPlayer() {
+  keys = {};
   player.x = currentLevel.playerStart.x;
   player.y = currentLevel.playerStart.y;
   player.xSpeed = 0;
@@ -368,6 +374,7 @@ function resetPlayer() {
 }
 
 function resetGame() {
+  keys = {};
   level = 0;
   score = 0;
   loadLevel(level);
@@ -378,8 +385,8 @@ function update() {
   if (transitioning) return;
 
 
-  if (keys["ArrowLeft"]) player.xSpeed = -3;
-  else if (keys["ArrowRight"]) player.xSpeed = 3;
+  if (keys["ArrowLeft"] || keys["KeyA"]) player.xSpeed = -3;
+  else if (keys["ArrowRight"] || keys["KeyD"]) player.xSpeed = 3;
   else player.xSpeed *= friction;
 
 
@@ -391,7 +398,7 @@ function update() {
   );
 
 
-  if ((keys["Space"] && player.onGround) || (keys["ArrowUp"] && player.onGround)) {
+  if ((keys["Space"] || keys["ArrowUp"] || keys["KeyW"]) && player.onGround) {
     player.ySpeed = inBooster ? -20.4 : -12;
     jumpSound.play();
     player.onGround = false;
@@ -410,9 +417,16 @@ function update() {
       if (p.x < p.range[0] || p.x + p.width > p.range[1]) p.dx *= -1;
     }
 
+    const collisionInset = p.y < 370 ? p.width * (p.type === "spiky" ? 0.09 : 0.05) : 0;
+    const collisionLeft = p.x + collisionInset;
+    const collisionRight = p.x + p.width - collisionInset;
+    const supportOverlap = Math.min(player.x + player.width, collisionRight) - Math.max(player.x, collisionLeft);
+    const collidesHorizontally = p.type === "spiky"
+      ? supportOverlap > 0
+      : supportOverlap >= player.width * 0.5;
+
     if (
-      player.x < p.x + p.width &&
-      player.x + player.width > p.x &&
+      collidesHorizontally &&
       player.y + player.height < p.y + 10 &&
       player.y + player.height + player.ySpeed >= p.y
     ) {
@@ -480,10 +494,9 @@ function update() {
     if (currentRound === 1) completedLevels.round1[level] = true;
     if (currentRound === 2) completedLevels.round2[level] = true;
 
-    level++;
     const levels = currentRound === 1 ? round1Levels : round2Levels;
 
-    if (level >= levels.length) {
+    if (level + 1 >= levels.length) {
       setTimeout(() => {
         alert("🎉 You completed all levels in Round " + currentRound);
         document.getElementById("levelCleared").style.display = "none";
@@ -493,6 +506,7 @@ function update() {
     } else {
       setTimeout(() => {
         document.getElementById("levelCleared").style.display = "none";
+        level++;
         loadLevel(level);
       }, 1500);
     }
@@ -514,13 +528,12 @@ function draw() {
  
   ctx.drawImage(bgImg, 0, 0, canvas.width, canvas.height);
 
-  
   currentLevel.platforms.forEach(p => {
     if (p.type === "spiky") {
       ctx.drawImage(spikesImg, p.x, p.y, p.width, p.height);
     } else {
       if (p.y < 370) {
-        ctx.drawImage(platformImg, p.x, p.y, p.width, p.height);
+        ctx.drawImage(platformImg, p.x, p.y - platformSurfaceOffset, p.width, p.height);
       } else {
         ctx.fillStyle = "rgba(27, 54, 54, 0.6)";
         ctx.fillRect(p.x, p.y, p.width, p.height);
@@ -529,7 +542,7 @@ function draw() {
   });
 
   
-  ctx.drawImage(robotImg, player.x, player.y, player.width, player.height);
+  ctx.drawImage(robotImg, player.x, player.y + 2, player.width, player.height);
 
   
   currentLevel.coins.forEach(c => {
@@ -541,7 +554,8 @@ function draw() {
   
   currentLevel.enemies.forEach(e => {
     const sprite = e.type === "drone" ? droneImg : spiderImg;
-    ctx.drawImage(sprite, e.x, e.y, e.width, e.height);
+    const spriteYOffset = e.type === "spider" ? 5 : 0;
+    ctx.drawImage(sprite, e.x, e.y + spriteYOffset, e.width, e.height);
   });
 
   
@@ -568,13 +582,31 @@ ctx.font = "18px Courier";
 ctx.fillText("Round: " + currentRound, 250, 25);
 ctx.fillText("Score: " + score, 10, 25);
 ctx.fillText("Level: " + (level + 1), 460, 25);
-ctx.fillText("Time: " + levelTimer + "s", 700, 25);
+ctx.fillText("Time: " + levelTimer + "s", 620, 25);
+
+if (isPaused) {
+  ctx.fillStyle = "rgba(0, 0, 0, 0.65)";
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+  ctx.fillStyle = "#00f5d4";
+  ctx.font = "32px Courier";
+  ctx.textAlign = "center";
+  ctx.fillText("PAUSED", canvas.width / 2, canvas.height / 2);
+  ctx.textAlign = "start";
+}
 }                       
 
 
 
-function gameLoop() {
-  update();
+function gameLoop(timestamp = performance.now()) {
+  if (previousFrameTime === null) previousFrameTime = timestamp - frameDuration;
+  frameAccumulator += Math.min(timestamp - previousFrameTime, frameDuration * 6);
+  previousFrameTime = timestamp;
+
+  while (frameAccumulator >= frameDuration) {
+    if (!isPaused) update();
+    frameAccumulator -= frameDuration;
+  }
+
   draw();
   requestAnimationFrame(gameLoop);
 }
@@ -590,6 +622,8 @@ function setupMobileControls() {
   const leftBtn = document.getElementById("leftBtn");
   const rightBtn = document.getElementById("rightBtn");
   const jumpBtn = document.getElementById("jumpBtn");
+
+  if (!leftBtn || !rightBtn || !jumpBtn) return;
 
   function press(key) {
     keys[key] = true;
@@ -626,6 +660,26 @@ window.onload = () => {
     document.getElementById("roundScreen").style.display = "flex";
   });
 
+  const soundToggle = document.getElementById("soundToggle");
+  soundToggle.addEventListener("click", () => {
+    isMuted = !isMuted;
+    soundEffects.forEach(sound => sound.muted = isMuted);
+    soundToggle.textContent = isMuted ? "🔇" : "🔊";
+    soundToggle.setAttribute("aria-label", isMuted ? "Unmute sound" : "Mute sound");
+    soundToggle.title = isMuted ? "Unmute sound" : "Mute sound";
+    soundToggle.setAttribute("aria-pressed", String(isMuted));
+  });
+
+  document.addEventListener("keydown", e => {
+    const gameArea = document.getElementById("gameArea");
+    const pauseKey = e.code === "KeyP" || e.code === "Escape";
+    if (!pauseKey || e.repeat || !gameLoopStarted || transitioning || getComputedStyle(gameArea).display === "none") return;
+
+    e.preventDefault();
+    isPaused = !isPaused;
+    keys = {};
+  });
+
   setupMobileControls(); 
 };
 
@@ -633,7 +687,9 @@ function startGame() {
   document.getElementById("startScreen").style.display = "none";
   document.getElementById("roundScreen").style.display = "none";
   document.getElementById("controls").style.display = "flex"; 
+  document.getElementById("gameArea").style.display = "block";
   canvas.style.display = "block";
+  document.getElementById("soundToggle").style.display = "block";
   loadLevel(currentLevel);
 }
 
@@ -641,5 +697,7 @@ function startGame() {
 function returnToMenu() {
   document.getElementById("controls").style.display = "none"; 
   document.getElementById("roundScreen").style.display = "flex";
+  document.getElementById("gameArea").style.display = "none";
+  document.getElementById("soundToggle").style.display = "none";
   canvas.style.display = "none";
 }

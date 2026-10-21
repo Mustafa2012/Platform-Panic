@@ -11,6 +11,9 @@ body {
   height: 100vh;
 }
 canvas {
+  display: block;
+  width: 100%;
+  height: auto;
   border: 3px solid #000000;
   background: #000000;
 }
@@ -180,4 +183,39 @@ html, body {
 
 
   
+
+
+#gameArea {
+  display: none;
+  position: relative;
+  width: min(94vw, 160vh, 1440px);
+}
+
+#soundToggle {
+  display: none;
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  z-index: 2;
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  border: 2px solid #00ffff;
+  border-radius: 6px;
+  background: #014d4e;
+  color: #00ffff;
+  font-size: 20px;
+  line-height: 1;
+  cursor: pointer;
+}
+
+#soundToggle:hover {
+  background: #67a1a1;
+  color: #014d4e;
+}
+
+
+
+
+
 
