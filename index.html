@@ -20,14 +20,14 @@
     <div class="round-node unlocked" onclick="selectRound(1)">
       <div class="circle">1</div>
       <p>Training Grounds</p>
-      <span class="progress">5/5</span>
+      <span class="progress">6/6</span>
     </div>
 
     
     <div class="round-node locked" onclick="selectRound(2)">
       <div class="circle">2</div>
       <p>Robot Factory</p>
-      <span class="progress">0/5</span>
+      <span class="progress">0/6</span>
     </div>
   </div>
 </div>
@@ -42,6 +42,7 @@
 
   <div id="gameArea">
     <canvas id="game" width="800"   height="400"></canvas>
+    <button id="nextLevelButton" type="button" title="Skip to the next level (testing only)">Next Level</button>
     <button id="soundToggle" type="button" aria-label="Mute sound" title="Mute sound" aria-pressed="false">🔊</button>
   </div>
   <img id="levelCleared" src="LevelCleared.png" style="display:none; position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); z-index:10; width:300px;">
@@ -51,4 +52,4 @@
      style="display:none; position:absolute; top:150px; left:350px; width:100px; z-index:1000;">
 
 </body>
-</html>.  
+</html>  

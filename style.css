@@ -209,11 +209,31 @@ html, body {
   cursor: pointer;
 }
 
-#soundToggle:hover {
+#nextLevelButton {
+  display: none;
+  position: absolute;
+  top: 12px;
+  right: 60px;
+  z-index: 2;
+  padding: 0 10px;
+  height: 40px;
+  border: 2px solid #00ffff;
+  border-radius: 6px;
+  background: #014d4e;
+  color: #00ffff;
+  font: bold 14px "Courier New", monospace;
+  cursor: pointer;
+}
+
+#nextLevelButton:hover {
   background: #67a1a1;
   color: #014d4e;
 }
 
+#soundToggle:hover {
+  background: #67a1a1;
+  color: #014d4e;
+}
 
 
 

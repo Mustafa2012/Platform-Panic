@@ -14,8 +14,8 @@ bgImg.src = 'Images/GameBackground.png';
 const groundImg = new Image();
 groundImg.src = 'Images/Groundplatform.png';
 
-const robotImg = new Image();
-robotImg.src = 'Images/Robot.png';
+const robotSpriteSheet = new Image();
+robotSpriteSheet.src = 'Images/RobotSprites.png';
 
 const droneImg = new Image();
 droneImg.src = 'Images/Drone.png'
@@ -31,6 +31,8 @@ coinImg.src = 'Images/BatteryCoin.png';
 
 const goalImg = new Image();
 goalImg.src = 'Images/DoorGoal.png';
+const goalSize = 45;
+const goalOffsetY = goalSize - 30;
 
 const platformImg = new Image();
 platformImg.src = 'Images/Platform.png';
@@ -73,7 +75,7 @@ const round1Levels = [
   },
   {
     playerStart: { x: 30, y: 300 },
-    goal: { x: 700, y: 150 },
+    goal: { x: 700, y: 140 },
     platforms: [
       { x: 0, y: 370, width: 800, height: 30 },
       { x: 100, y: 320, width: 100, height: 20 },
@@ -158,6 +160,30 @@ const round1Levels = [
       { x: 600, y: 180, width: 30, height: 30, dir: -1, type: "drone" }
     ]
   },
+  {
+    playerStart: { x: 730, y: 300 },
+    goal: { x: 25, y: 343 },
+    platforms: [
+      { x: 0, y: 370, width: 800, height: 30 },
+      { x: 620, y: 310, width: 90, height: 20 },
+      { x: 455, y: 260, width: 95, height: 20, moving: true, dy: 1.5, range: [205, 300] },
+      { x: 290, y: 210, width: 95, height: 20 },
+      { x: 130, y: 160, width: 95, height: 20 },
+      { x: 500, y: 355, width: 55, height: 20, type: "spiky" },
+      { x: 300, y: 355, width: 55, height: 20, type: "spiky" }
+    ],
+    coins: [
+      { x: 650, y: 275, collected: false },
+      { x: 485, y: 225, collected: false },
+      { x: 320, y: 175, collected: false },
+      { x: 160, y: 125, collected: false },
+      { x: 90, y: 340, collected: false }
+    ],
+    enemies: [
+      { x: 560, y: 340, width: 30, height: 30, dir: 1, type: "spider" },
+      { x: 330, y: 175, width: 30, height: 30, dir: -1, type: "drone" }
+    ]
+  },
 ];
 
 const round2Levels = [
@@ -180,7 +206,7 @@ const round2Levels = [
   },
   {
     playerStart: { x: 30, y: 300 },
-    goal: { x: 700, y: 150, locked: true },
+    goal: { x: 700, y: 140, locked: true },
     platforms: [
       { x: 0, y: 370, width: 800, height: 30 },
       { x: 100, y: 320, width: 100, height: 20 },
@@ -275,6 +301,30 @@ const round2Levels = [
       { x: 600, y: 180, width: 30, height: 30, dir: -1, type: "drone" }
     ]
   },
+  {
+    playerStart: { x: 730, y: 300 },
+    goal: { x: 25, y: 343, locked: true },
+    platforms: [
+      { x: 0, y: 370, width: 800, height: 30 },
+      { x: 620, y: 310, width: 90, height: 20 },
+      { x: 455, y: 260, width: 95, height: 20, moving: true, dy: 1.5, range: [205, 300] },
+      { x: 290, y: 210, width: 95, height: 20 },
+      { x: 130, y: 160, width: 95, height: 20 },
+      { x: 500, y: 355, width: 55, height: 20, type: "spiky" },
+      { x: 300, y: 355, width: 55, height: 20, type: "spiky" },
+    ],
+    coins: [
+      { x: 650, y: 275, collected: false },
+      { x: 485, y: 225, collected: false },
+      { x: 320, y: 175, collected: false },
+      { x: 160, y: 125, collected: false },
+      { x: 90, y: 340, collected: false }
+    ],
+    enemies: [
+      { x: 560, y: 340, width: 30, height: 30, dir: 1, type: "spider" },
+      { x: 330, y: 175, width: 30, height: 30, dir: -1, type: "drone" }
+    ]
+  },
 ];
 
 let player, currentLevel;
@@ -285,6 +335,7 @@ function showRoundScreen() {
   document.getElementById("roundScreen").style.display = "flex";
   document.getElementById("gameArea").style.display = "none";
   document.getElementById("soundToggle").style.display = "none";
+  document.getElementById("nextLevelButton").style.display = "none";
 }
 
 
@@ -297,6 +348,7 @@ function selectRound(round) {
   document.getElementById("game").style.display = "block";
   document.getElementById("controls").style.display = "flex";  
   document.getElementById("soundToggle").style.display = "block";
+  document.getElementById("nextLevelButton").style.display = "block";
 
   loadLevel(level);
   if (!gameLoopStarted) {
@@ -335,6 +387,7 @@ function loadLevel(index) {
     height: 30,
     xSpeed: 0,
     ySpeed: 0,
+    facingRight: true,
     color: "#ff006e",
     onGround: false,
   };
@@ -363,6 +416,15 @@ function loadLevel(index) {
   }, 1000);
 }
 
+function skipToNextLevel() {
+  if (!gameLoopStarted || transitioning) return;
+
+  const levels = currentRound === 1 ? round1Levels : round2Levels;
+  level = (level + 1) % levels.length;
+  keys = {};
+  loadLevel(level);
+}
+
 
 function resetPlayer() {
   keys = {};
@@ -385,8 +447,13 @@ function update() {
   if (transitioning) return;
 
 
-  if (keys["ArrowLeft"] || keys["KeyA"]) player.xSpeed = -3;
-  else if (keys["ArrowRight"] || keys["KeyD"]) player.xSpeed = 3;
+  if (keys["ArrowLeft"] || keys["KeyA"]) {
+    player.xSpeed = -3;
+    player.facingRight = false;
+  } else if (keys["ArrowRight"] || keys["KeyD"]) {
+    player.xSpeed = 3;
+    player.facingRight = true;
+  }
   else player.xSpeed *= friction;
 
 
@@ -409,34 +476,46 @@ function update() {
   player.x += player.xSpeed;
   player.y += player.ySpeed;
 
+  const hitSpikes = currentLevel.platforms.some(p =>
+    p.type === "spiky" &&
+    player.x < p.x + p.width &&
+    player.x + player.width > p.x &&
+    player.y < p.y + p.height &&
+    player.y + player.height > p.y
+  );
+  if (hitSpikes) {
+    resetPlayer();
+    return;
+  }
 
   player.onGround = false;
   currentLevel.platforms.forEach(p => {
+    if (p.type === "spiky") return;
+
     if (p.moving) {
-      p.x += p.dx;
-      if (p.x < p.range[0] || p.x + p.width > p.range[1]) p.dx *= -1;
+      if (p.dy !== undefined) {
+        p.y += p.dy;
+        if (p.y < p.range[0] || p.y > p.range[1]) p.dy *= -1;
+      } else {
+        p.x += p.dx;
+        if (p.x < p.range[0] || p.x + p.width > p.range[1]) p.dx *= -1;
+      }
     }
 
-    const collisionInset = p.y < 370 ? p.width * (p.type === "spiky" ? 0.09 : 0.05) : 0;
+    const collisionInset = p.y < 370 ? p.width * 0.05 : 0;
     const collisionLeft = p.x + collisionInset;
     const collisionRight = p.x + p.width - collisionInset;
     const supportOverlap = Math.min(player.x + player.width, collisionRight) - Math.max(player.x, collisionLeft);
-    const collidesHorizontally = p.type === "spiky"
-      ? supportOverlap > 0
-      : supportOverlap >= player.width * 0.5;
+    const collidesHorizontally = supportOverlap >= player.width * 0.5;
 
     if (
       collidesHorizontally &&
       player.y + player.height < p.y + 10 &&
       player.y + player.height + player.ySpeed >= p.y
     ) {
-      if (p.type === "spiky") {
-        resetPlayer();
-      } else {
-        player.ySpeed = 0;
-        player.y = p.y - player.height;
-        player.onGround = true;
-      }
+      player.ySpeed = 0;
+      player.y = p.y - player.height;
+      player.onGround = true;
     }
   });
 
@@ -478,10 +557,10 @@ function update() {
   }
 
  if (portalUnlocked &&
-    player.x < currentLevel.goal.x + 30 &&
+    player.x < currentLevel.goal.x + goalSize &&
     player.x + player.width > currentLevel.goal.x &&
-    player.y < currentLevel.goal.y + 30 &&
-    player.y + player.height > currentLevel.goal.y
+    player.y < currentLevel.goal.y - goalOffsetY + goalSize &&
+    player.y + player.height > currentLevel.goal.y - goalOffsetY
 ) {
   if (!transitioning) {
     transitioning = true;
@@ -522,7 +601,7 @@ function isRoundComplete(round) {
 }
 
 
-function draw() {
+function draw(timestamp) {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
 
  
@@ -530,7 +609,7 @@ function draw() {
 
   currentLevel.platforms.forEach(p => {
     if (p.type === "spiky") {
-      ctx.drawImage(spikesImg, p.x, p.y, p.width, p.height);
+      ctx.drawImage(spikesImg, 87, 219, 849, 716, p.x, p.y, p.width, p.height);
     } else {
       if (p.y < 370) {
         ctx.drawImage(platformImg, p.x, p.y - platformSurfaceOffset, p.width, p.height);
@@ -542,7 +621,29 @@ function draw() {
   });
 
   
-  ctx.drawImage(robotImg, player.x, player.y + 2, player.width, player.height);
+  if (robotSpriteSheet.complete && robotSpriteSheet.naturalWidth > 0) {
+    const frameCount = 5;
+    const frameWidth = robotSpriteSheet.naturalWidth / frameCount;
+    const frameHeight = robotSpriteSheet.naturalHeight / 5;
+    const isMoving = !transitioning && Math.abs(player.xSpeed) > 0.2;
+    const frame = isMoving ? Math.floor(timestamp / 110) % frameCount : 0;
+    const spriteSize = player.width * 2.4;
+    const spriteX = player.x + (player.width - spriteSize) / 2;
+    const spriteY = player.y + player.height - (105 / frameHeight) * spriteSize;
+
+    ctx.save();
+    if (player.facingRight) {
+      ctx.translate(player.x + player.width / 2, 0);
+      ctx.scale(-1, 1);
+      ctx.translate(-(player.x + player.width / 2), 0);
+    }
+    ctx.drawImage(
+      robotSpriteSheet,
+      frame * frameWidth, 0, frameWidth, frameHeight,
+      spriteX, spriteY, spriteSize, spriteSize
+    );
+    ctx.restore();
+  }
 
   
   currentLevel.coins.forEach(c => {
@@ -568,11 +669,11 @@ function draw() {
 
      
   if (portalUnlocked) {
-    ctx.drawImage(goalImg, currentLevel.goal.x, currentLevel.goal.y, 30, 30);
+    ctx.drawImage(goalImg, currentLevel.goal.x, currentLevel.goal.y - goalOffsetY, goalSize, goalSize);
   } else {
    
     ctx.globalAlpha = 0.3;
-    ctx.drawImage(goalImg, currentLevel.goal.x, currentLevel.goal.y, 30, 30);
+    ctx.drawImage(goalImg, currentLevel.goal.x, currentLevel.goal.y - goalOffsetY, goalSize, goalSize);
     ctx.globalAlpha = 1;
   }
 
@@ -607,15 +708,15 @@ function gameLoop(timestamp = performance.now()) {
     frameAccumulator -= frameDuration;
   }
 
-  draw();
+  draw(timestamp);
   requestAnimationFrame(gameLoop);
 }
         
 
 
 let completedLevels = {
-  round1: [false, false, false, false, false],
-  round2: [false, false, false, false, false]
+  round1: [false, false, false, false, false, false],
+  round2: [false, false, false, false, false, false]
 };
 
 function setupMobileControls() {
@@ -661,6 +762,9 @@ window.onload = () => {
   });
 
   const soundToggle = document.getElementById("soundToggle");
+  const nextLevelButton = document.getElementById("nextLevelButton");
+  nextLevelButton.addEventListener("click", skipToNextLevel);
+
   soundToggle.addEventListener("click", () => {
     isMuted = !isMuted;
     soundEffects.forEach(sound => sound.muted = isMuted);
@@ -690,6 +794,7 @@ function startGame() {
   document.getElementById("gameArea").style.display = "block";
   canvas.style.display = "block";
   document.getElementById("soundToggle").style.display = "block";
+  document.getElementById("nextLevelButton").style.display = "block";
   loadLevel(currentLevel);
 }
 
@@ -699,5 +804,6 @@ function returnToMenu() {
   document.getElementById("roundScreen").style.display = "flex";
   document.getElementById("gameArea").style.display = "none";
   document.getElementById("soundToggle").style.display = "none";
+  document.getElementById("nextLevelButton").style.display = "none";
   canvas.style.display = "none";
 }
