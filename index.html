@@ -4,6 +4,9 @@
 <head>
   <meta charset="UTF-8">
   <title>Platform Panic</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -14,21 +17,18 @@
 </div>
 
 <div id="roundScreen" style="display:none;">
-  <h2>Select Round</h2>
-  <div class="round-container">
-   
-    <div class="round-node unlocked" onclick="selectRound(1)">
-      <div class="circle">1</div>
-      <p>Training Grounds</p>
-      <span class="progress">6/6</span>
-    </div>
-
-    
-    <div class="round-node locked" onclick="selectRound(2)">
-      <div class="circle">2</div>
-      <p>Robot Factory</p>
-      <span class="progress">0/6</span>
-    </div>
+  <header class="round-header">
+    <nav class="round-tabs" aria-label="Choose a round">
+      <button class="round-tab selected" type="button" data-round="1" aria-pressed="true" onclick="selectRound(1)">Training Grounds</button>
+      <button class="round-tab" type="button" data-round="2" aria-pressed="false" onclick="selectRound(2)">Robot Factory</button>
+    </nav>
+  </header>
+  <div class="level-map">
+    <svg class="map-route" viewBox="0 0 1000 420" preserveAspectRatio="none" aria-hidden="true">
+      <path d="M80 310 C145 310 150 105 220 105 S295 285 360 285 S435 105 500 105 S575 285 640 285 S715 105 780 105 S855 285 920 285"></path>
+    </svg>
+    <div id="levelNodes" class="level-nodes" aria-label="Levels"></div>
+    <p id="mapProgress" class="map-progress" aria-live="polite"></p>
   </div>
 </div>
 
@@ -45,11 +45,32 @@
     <button id="nextLevelButton" type="button" title="Skip to the next level (testing only)">Next Level</button>
     <button id="soundToggle" type="button" aria-label="Mute sound" title="Mute sound" aria-pressed="false">🔊</button>
   </div>
-  <img id="levelCleared" src="LevelCleared.png" style="display:none; position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); z-index:10; width:300px;">
+  <section id="levelCompleteScreen" role="dialog" aria-modal="true" aria-labelledby="completionTitle" style="display:none;">
+    <div class="completion-card">
+      <h1 id="completionTitle">Level Complete!</h1>
+      <p id="completionStage" class="completion-stage"></p>
+      <div class="completion-stats">
+        <div><span>Time</span><strong id="completionTime"></strong></div>
+        <div><span>Score</span><strong id="completionScore"></strong></div>
+        <div><span>Batteries</span><strong id="completionCoins"></strong></div>
+      </div>
+      <div id="completionStars" class="completion-stars" aria-label="Level rating"></div>
+      <div class="completion-actions">
+        <button id="completionReplay" type="button" aria-label="Replay this level" disabled>
+          <span aria-hidden="true">↻</span>
+        </button>
+        <button id="completionContinue" type="button" aria-label="Choose a level" disabled>
+          <span aria-hidden="true">☷</span>
+        </button>
+        <button id="completionNext" type="button" aria-label="Next level" disabled>
+          <svg class="completion-next-icon" aria-hidden="true" viewBox="0 0 32 32">
+            <path d="M5 16h21M17 7l9 9-9 9"></path>
+          </svg>
+        </button>
+      </div>
+    </div>
+  </section>
   <script src="game.js"></script>
-<img id="levelCleared" 
-     src="https://upload.wikimedia.org/wikipedia/commons/5/59/Checkmark_green.svg" 
-     style="display:none; position:absolute; top:150px; left:350px; width:100px; z-index:1000;">
 
 </body>
 </html>  

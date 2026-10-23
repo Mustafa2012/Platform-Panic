@@ -93,6 +93,53 @@ const round1Levels = [
     ]
   },
   {
+    playerStart: { x: 40, y: 300 },
+    goal: { x: 740, y: 343 },
+    platforms: [
+      { x: 0, y: 370, width: 800, height: 30 },
+      { x: 110, y: 310, width: 100, height: 20 },
+      { x: 280, y: 250, width: 90, height: 20 },
+      { x: 450, y: 300, width: 110, height: 20 },
+      { x: 630, y: 230, width: 95, height: 20 },
+      { x: 220, y: 355, width: 50, height: 20, type: "spiky" },
+    ],
+    coins: [
+      { x: 140, y: 275, collected: false },
+      { x: 310, y: 215, collected: false },
+      { x: 480, y: 265, collected: false },
+      { x: 660, y: 195, collected: false }
+    ],
+    enemies: [
+      { x: 350, y: 340, width: 30, height: 30, dir: 1, type: "spider" },
+      { x: 650, y: 195, width: 30, height: 30, dir: -1, type: "drone" }
+    ]
+  },
+  {
+    playerStart: { x: 40, y: 300 },
+    goal: { x: 740, y: 160 },
+    platforms: [
+      { x: 0, y: 370, width: 800, height: 30 },
+      { x: 80, y: 315, width: 85, height: 20 },
+      { x: 220, y: 260, width: 80, height: 20 },
+      { x: 365, y: 205, width: 90, height: 20 },
+      { x: 525, y: 255, width: 85, height: 20 },
+      { x: 670, y: 205, width: 100, height: 20 },
+      { x: 300, y: 355, width: 70, height: 20, type: "spiky" },
+      { x: 470, y: 355, width: 70, height: 20, type: "spiky" },
+    ],
+    coins: [
+      { x: 105, y: 280, collected: false },
+      { x: 245, y: 225, collected: false },
+      { x: 390, y: 170, collected: false },
+      { x: 550, y: 220, collected: false },
+      { x: 700, y: 170, collected: false }
+    ],
+    enemies: [
+      { x: 180, y: 340, width: 30, height: 30, dir: -1, type: "spider" },
+      { x: 550, y: 220, width: 30, height: 30, dir: 1, type: "drone" },
+    ]
+  },
+  {
     playerStart: { x: 20, y: 300 },
     goal: { x: 750, y: 50 },
     platforms: [
@@ -111,28 +158,6 @@ const round1Levels = [
     enemies: [
       { x: 100, y: 340, width: 30, height: 30, dir: 1, type: "spider" },
       { x: 300, y: 240, width: 30, height: 30, dir: -1, type: "drone" },
-    ]
-  },
-  {
-    playerStart: { x: 20, y: 300 },
-    goal: { x: 700, y: 80 },
-    platforms: [
-      { x: 0, y: 370, width: 800, height: 30 },
-      { x: 120, y: 320, width: 100, height: 20 },
-      { x: 270, y: 270, width: 100, height: 20 },
-      { x: 420, y: 220, width: 100, height: 20 },
-      { x: 570, y: 170, width: 100, height: 20 },
-      { x: 300, y: 120, width: 100, height: 20, moving: true, dx: 2, range: [300, 500] },
-    ],
-    coins: [
-      { x: 130, y: 290, collected: false },
-      { x: 290, y: 240, collected: false },
-      { x: 440, y: 190, collected: false },
-      { x: 590, y: 140, collected: false },
-    ],
-    enemies: [
-      { x: 150, y: 340, width: 30, height: 30, dir: 1, type: "spider" },
-      { x: 350, y: 250, width: 30, height: 30, dir: -1, type: "drone" },
     ]
   },
   {
@@ -169,8 +194,8 @@ const round1Levels = [
       { x: 455, y: 260, width: 95, height: 20, moving: true, dy: 1.5, range: [205, 300] },
       { x: 290, y: 210, width: 95, height: 20 },
       { x: 130, y: 160, width: 95, height: 20 },
-      { x: 500, y: 355, width: 55, height: 20, type: "spiky" },
-      { x: 300, y: 355, width: 55, height: 20, type: "spiky" }
+      { x: 500, y: 360, width: 55, height: 20, type: "spiky" },
+      { x: 300, y: 360, width: 55, height: 20, type: "spiky" }
     ],
     coins: [
       { x: 650, y: 275, collected: false },
@@ -186,146 +211,11 @@ const round1Levels = [
   },
 ];
 
-const round2Levels = [
-  {
-    playerStart: { x: 50, y: 300 },
-    goal: { x: 700, y: 343, locked: true },
-    platforms: [
-      { x: 0, y: 370, width: 800, height: 30 },
-      { x: 150, y: 300, width: 120, height: 20 },
-      { x: 320, y: 250, width: 100, height: 20 },
-      { x: 500, y: 200, width: 100, height: 20 },
-    ],
-    coins: [
-      { x: 170, y: 270, collected: false },
-      { x: 530, y: 170, collected: false }
-    ],
-    enemies: [
-      { x: 350, y: 340, width: 30, height: 30, dir: 1, type: "spider"},
-    ]
-  },
-  {
-    playerStart: { x: 30, y: 300 },
-    goal: { x: 700, y: 140, locked: true },
-    platforms: [
-      { x: 0, y: 370, width: 800, height: 30 },
-      { x: 100, y: 320, width: 100, height: 20 },
-      { x: 220, y: 260, width: 100, height: 20 },
-      { x: 360, y: 210, width: 100, height: 20 },
-      { x: 500, y: 160, width: 100, height: 20 },
-    ],
-    coins: [
-      { x: 120, y: 290, collected: false },
-      { x: 380, y: 180, collected: false },
-      { x: 520, y: 130, collected: false }
-      
-    ],
-    enemies: [
-      { x: 600, y: 340, width: 30, height: 30, dir: -1, type: "spider" },
-      { x: 200, y: 320, width: 30, height: 30, dir: 1, type: "drone" },
-    ]
-  },
-  {
-    playerStart: { x: 20, y: 300 },
-    goal: { x: 750, y: 50, locked: true },
-    platforms: [
-      { x: 0, y: 370, width: 800, height: 30 },
-      { x: 150, y: 320, width: 100, height: 20 },
-      { x: 300, y: 260, width: 100, height: 20 },
-      { x: 450, y: 200, width: 100, height: 20 },
-      { x: 600, y: 140, width: 100, height: 20 },
-      { x: 200, y: 180, width: 100, height: 20, moving: true, dx: 2, range: [200, 400] },
-    ],
-    coins: [
-      { x: 170, y: 290, collected: false },
-      { x: 470, y: 170, collected: false },
-      { x: 630, y: 110, collected: false },
-      { x: 300, y: 240, collected: false },
-    ],
-    enemies: [
-      { x: 100, y: 340, width: 30, height: 30, dir: 1, type: "spider" },
-      { x: 300, y: 240, width: 30, height: 30, dir: -1, type: "drone" },
-      { x: 500, y: 180, width: 30, height: 30, dir: 1, type: "drone" },
-    ]
-  },
-  {
-    playerStart: { x: 20, y: 300 },
-    goal: { x: 700, y: 80, locked: true },
-    platforms: [
-      { x: 0, y: 370, width: 800, height: 30 },
-      { x: 120, y: 320, width: 100, height: 20 },
-      { x: 270, y: 270, width: 100, height: 20 },
-      { x: 420, y: 220, width: 100, height: 20 },
-      { x: 570, y: 170, width: 100, height: 20 },
-      { x: 300, y: 120, width: 100, height: 20, moving: true, dx: 2, range: [300, 500] },
-      { x: 200, y: 180, width: 60, height: 20, type: "spiky" },
-    ],
-    coins: [
-      { x: 130, y: 290, collected: false },
-      { x: 290, y: 240, collected: false },
-      { x: 440, y: 190, collected: false },
-      { x: 590, y: 140, collected: false },
-      { x: 320, y: 90, collected: false },
-    ],
-    enemies: [
-      { x: 150, y: 340, width: 30, height: 30, dir: 1, type: "spider" },
-      { x: 350, y: 250, width: 30, height: 30, dir: -1, type: "drone" },
-      { x: 550, y: 190, width: 30, height: 30, dir: 1, type: "drone" },
-    ]
-  },
-  {
-    playerStart: { x: 20, y: 300 },
-    goal: { x: 750, y: 50, locked: true },
-    platforms: [
-      { x: 0, y: 370, width: 800, height: 30 }, 
-      { x: 100, y: 320, width: 80, height: 20 },
-      { x: 250, y: 280, width: 100, height: 20 },
-      { x: 420, y: 240, width: 100, height: 20 },
-      { x: 600, y: 200, width: 100, height: 20 },
-      { x: 300, y: 160, width: 80, height: 20, moving: true, dx: 2, range: [300, 500] },
-      { x: 150, y: 120, width: 60, height: 20, type: "spiky" },
-      { x: 500, y: 100, width: 100, height: 20 }
-    ],
-    coins: [
-      { x: 120, y: 290, collected: false },
-      { x: 270, y: 250, collected: false },
-      { x: 440, y: 210, collected: false },
-      { x: 620, y: 170, collected: false },
-      { x: 310, y: 130, collected: false },
-      { x: 520, y: 70, collected: false },
-    ],
-    enemies: [
-      { x: 180, y: 340, width: 30, height: 30, dir: 1, type: "spider" },
-      { x: 370, y: 220, width: 30, height: 30, dir: -1, type: "drone" },
-      { x: 470, y: 320, width: 30, height: 30, dir: 1, type: "drone" },
-      { x: 600, y: 180, width: 30, height: 30, dir: -1, type: "drone" }
-    ]
-  },
-  {
-    playerStart: { x: 730, y: 300 },
-    goal: { x: 25, y: 343, locked: true },
-    platforms: [
-      { x: 0, y: 370, width: 800, height: 30 },
-      { x: 620, y: 310, width: 90, height: 20 },
-      { x: 455, y: 260, width: 95, height: 20, moving: true, dy: 1.5, range: [205, 300] },
-      { x: 290, y: 210, width: 95, height: 20 },
-      { x: 130, y: 160, width: 95, height: 20 },
-      { x: 500, y: 355, width: 55, height: 20, type: "spiky" },
-      { x: 300, y: 355, width: 55, height: 20, type: "spiky" },
-    ],
-    coins: [
-      { x: 650, y: 275, collected: false },
-      { x: 485, y: 225, collected: false },
-      { x: 320, y: 175, collected: false },
-      { x: 160, y: 125, collected: false },
-      { x: 90, y: 340, collected: false }
-    ],
-    enemies: [
-      { x: 560, y: 340, width: 30, height: 30, dir: 1, type: "spider" },
-      { x: 330, y: 175, width: 30, height: 30, dir: -1, type: "drone" }
-    ]
-  },
-];
+const round2Levels = round1Levels.map(levelData => {
+  const factoryLevel = JSON.parse(JSON.stringify(levelData));
+  factoryLevel.goal.locked = true;
+  return factoryLevel;
+});
 
 let player, currentLevel;
    
@@ -336,21 +226,133 @@ function showRoundScreen() {
   document.getElementById("gameArea").style.display = "none";
   document.getElementById("soundToggle").style.display = "none";
   document.getElementById("nextLevelButton").style.display = "none";
+  document.getElementById("controls").style.display = "none";
+  document.getElementById("levelCompleteScreen").style.display = "none";
+  renderLevelMap();
+}
+
+function showLevelCompleteScreen() {
+  const totalCoins = currentLevel.coins.length;
+  const collectedCoins = currentLevel.coins.filter(coin => coin.collected).length;
+  const elapsedTime = 20 - levelTimer;
+  const earnedStars = [
+    true,
+    collectedCoins === totalCoins,
+    elapsedTime < 10,
+  ];
+  const starsEarned = earnedStars.filter(Boolean).length;
+  const stars = document.getElementById("completionStars");
+
+  document.getElementById("completionStage").textContent = `STAGE ${level + 1}`;
+  document.getElementById("completionTime").textContent = `${elapsedTime}s`;
+  document.getElementById("completionScore").textContent = score;
+  document.getElementById("completionCoins").textContent = `${collectedCoins}/${totalCoins}`;
+  stars.replaceChildren(...earnedStars.map((_, index) => {
+    const star = document.createElement("span");
+    const icon = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+    const shape = document.createElementNS("http://www.w3.org/2000/svg", "path");
+
+    star.className = index < starsEarned ? "earned" : "";
+    icon.setAttribute("viewBox", "0 0 48 48");
+    icon.setAttribute("aria-hidden", "true");
+    icon.classList.add("completion-star-icon");
+    shape.setAttribute("d", "M24 4 29.5 17.2 44 18.4 32.8 27.8 36.2 42 24 34.5 11.8 42 15.2 27.8 4 18.4 18.5 17.2Z");
+    shape.setAttribute("stroke-linejoin", "round");
+    shape.setAttribute("stroke-linecap", "round");
+    icon.append(shape);
+    star.append(icon);
+    return star;
+  }));
+  stars.setAttribute("aria-label", `${starsEarned} out of 3 stars`);
+  const completionScreen = document.getElementById("levelCompleteScreen");
+  const continueButton = document.getElementById("completionContinue");
+  const replayButton = document.getElementById("completionReplay");
+  const nextButton = document.getElementById("completionNext");
+  const levels = currentRound === 1 ? round1Levels : round2Levels;
+  completionScreen.style.display = "grid";
+  continueButton.disabled = true;
+  replayButton.disabled = true;
+  nextButton.disabled = level + 1 >= levels.length;
+
+  const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  window.setTimeout(() => {
+    if (completionScreen.style.display !== "none") {
+      continueButton.disabled = false;
+      replayButton.disabled = false;
+      if (level + 1 < levels.length) nextButton.disabled = false;
+      continueButton.focus();
+    }
+  }, reducedMotion ? 100 : 2400);
 }
 
 
 function selectRound(round) {
   currentRound = round;
-  level = 0;
+  renderLevelMap();
+}
+
+function renderLevelMap() {
+  const levels = currentRound === 1 ? round1Levels : round2Levels;
+  const completed = currentRound === 1 ? completedLevels.round1 : completedLevels.round2;
+  const levelNames = Array.from({ length: levels.length }, (_, index) => `Lvl ${index + 1}`);
+  const positions = [
+    [8, 74], [22, 25], [36, 68], [50, 25], [64, 68], [78, 25], [92, 68]
+  ];
+  const levelNodes = document.getElementById("levelNodes");
+  const completedCount = completed.filter(Boolean).length;
+
+  document.querySelectorAll(".round-tab").forEach(tab => {
+    const selected = Number(tab.dataset.round) === currentRound;
+    tab.classList.toggle("selected", selected);
+    tab.setAttribute("aria-pressed", String(selected));
+  });
+
+  levelNodes.replaceChildren();
+  levels.forEach((_, index) => {
+    const isCompleted = completed[index];
+    const isUnlocked = index === 0 || completed[index - 1];
+    const node = document.createElement("button");
+    const marker = document.createElement("span");
+    const title = document.createElement("span");
+    const [x, y] = positions[index];
+
+    node.type = "button";
+    node.className = `level-node${isCompleted ? " completed" : ""}`;
+    node.style.setProperty("--node-x", `${x}%`);
+    node.style.setProperty("--node-y", `${y}%`);
+    node.disabled = !isUnlocked;
+    node.setAttribute("aria-label", `${levelNames[index]}${isCompleted ? ", completed" : isUnlocked ? ", unlocked" : ", locked"}`);
+    node.title = isUnlocked ? `Play ${levelNames[index]}` : "Complete the previous level to unlock";
+    marker.className = "node-marker";
+    marker.textContent = isCompleted ? "✓" : isUnlocked ? String(index + 1) : "🔒";
+    title.className = "node-title";
+    title.textContent = levelNames[index];
+    node.append(marker, title);
+    if (isUnlocked) node.addEventListener("click", () => startLevel(index));
+    levelNodes.append(node);
+  });
+
+  document.getElementById("mapProgress").textContent =
+    completedCount === levels.length
+      ? "All levels cleared!"
+      : `${completedCount} / ${levels.length} levels cleared`;
+}
+
+function startLevel(index) {
+  const completed = currentRound === 1 ? completedLevels.round1 : completedLevels.round2;
+  if (index > 0 && !completed[index - 1]) return;
+
+  level = index;
   allLevels = currentRound === 1 ? round1Levels : round2Levels;
   document.getElementById("roundScreen").style.display = "none";
+  document.getElementById("levelCompleteScreen").style.display = "none";
   document.getElementById("gameArea").style.display = "block";
   document.getElementById("game").style.display = "block";
-  document.getElementById("controls").style.display = "flex";  
+  document.getElementById("controls").style.display = "flex";
   document.getElementById("soundToggle").style.display = "block";
   document.getElementById("nextLevelButton").style.display = "block";
-
   loadLevel(level);
+
   if (!gameLoopStarted) {
     gameLoopStarted = true;
     gameLoop();
@@ -358,20 +360,26 @@ function selectRound(round) {
 }
 
 
-const jumpSound = new Audio;
-jumpSound.src = 'Sound/JumpSound.wav';
-
-const coinSound = new Audio;
-coinSound.src = 'Sound/CoinSound.mp3';
-
-const hitSound = new Audio;
-hitSound.src = 'Sound/HitSound.wav';
-
-const goalSound = new Audio;
-goalSound.src = 'Sound/GoalSound.wav'
+const jumpSound = new Audio('Sound/JumpSound.wav');
+const coinSound = new Audio('Sound/CoinSound.mp3');
+const hitSound = new Audio('Sound/HitSound.wav');
+const goalSound = new Audio('Sound/GoalSound.wav');
 
 const soundEffects = [jumpSound, coinSound, hitSound, goalSound];
+soundEffects.forEach(sound => {
+  sound.preload = "auto";
+});
 let isMuted = false;
+
+function playSound(sound) {
+  sound.pause();
+  sound.currentTime = 0;
+  sound.play().catch(error => {
+    if (error.name !== "AbortError") {
+      console.error(`Unable to play sound effect ${sound.src}:`, error);
+    }
+  });
+}
 
 let currentRound = 1;
 let allLevels = round1Levels; 
@@ -380,6 +388,7 @@ function loadLevel(index) {
   const levels = currentRound === 1 ? round1Levels : round2Levels; 
   const lvl = levels[index];
 
+  score = 0;
   player = {
     x: lvl.playerStart.x,
     y: lvl.playerStart.y,
@@ -411,7 +420,13 @@ function loadLevel(index) {
     levelTimer--;
     if (levelTimer <= 0) {
       clearInterval(timerInterval);
-      resetGame();
+      if (currentRound === 1) {
+        keys = {};
+        loadLevel(level);
+        playSound(hitSound);
+      } else {
+        resetGame();
+      }
     }
   }, 1000);
 }
@@ -428,11 +443,8 @@ function skipToNextLevel() {
 
 function resetPlayer() {
   keys = {};
-  player.x = currentLevel.playerStart.x;
-  player.y = currentLevel.playerStart.y;
-  player.xSpeed = 0;
-  player.ySpeed = 0;
-  hitSound.play();
+  loadLevel(level);
+  playSound(hitSound);
 }
 
 function resetGame() {
@@ -440,7 +452,7 @@ function resetGame() {
   level = 0;
   score = 0;
   loadLevel(level);
-  hitSound.play();
+  playSound(hitSound);
 }
 
 function update() {
@@ -467,7 +479,7 @@ function update() {
 
   if ((keys["Space"] || keys["ArrowUp"] || keys["KeyW"]) && player.onGround) {
     player.ySpeed = inBooster ? -20.4 : -12;
-    jumpSound.play();
+    playSound(jumpSound);
     player.onGround = false;
   }
 
@@ -520,19 +532,22 @@ function update() {
   });
 
 
-  currentLevel.enemies.forEach(e => {
+  const hitEnemy = currentLevel.enemies.some(e => {
     e.x += e.dir * 2;
     if (e.x <= 0 || e.x + e.width >= canvas.width) e.dir *= -1;
 
-    if (
+    return (
       player.x < e.x + e.width &&
       player.x + player.width > e.x &&
       player.y < e.y + e.height &&
       player.y + player.height > e.y
-    ) {
-      resetGame();
-    }
+    );
   });
+  if (hitEnemy) {
+    if (currentRound === 1) resetPlayer();
+    else resetGame();
+    return;
+  }
 
 
   currentLevel.coins.forEach(c => {
@@ -544,7 +559,7 @@ function update() {
     ) {
       c.collected = true;
       score += 10;
-      coinSound.play();
+      playSound(coinSound);
     }
   });
 
@@ -564,31 +579,12 @@ function update() {
 ) {
   if (!transitioning) {
     transitioning = true;
-    goalSound.play();
+    playSound(goalSound);
     clearInterval(timerInterval);
-
-    document.getElementById("levelCleared").style.display = "block";
-
 
     if (currentRound === 1) completedLevels.round1[level] = true;
     if (currentRound === 2) completedLevels.round2[level] = true;
-
-    const levels = currentRound === 1 ? round1Levels : round2Levels;
-
-    if (level + 1 >= levels.length) {
-      setTimeout(() => {
-        alert("🎉 You completed all levels in Round " + currentRound);
-        document.getElementById("levelCleared").style.display = "none";
-
-        showRoundScreen();
-      }, 1500);
-    } else {
-      setTimeout(() => {
-        document.getElementById("levelCleared").style.display = "none";
-        level++;
-        loadLevel(level);
-      }, 1500);
-    }
+    showLevelCompleteScreen();
   }
 }
 
@@ -715,8 +711,8 @@ function gameLoop(timestamp = performance.now()) {
 
 
 let completedLevels = {
-  round1: [false, false, false, false, false, false],
-  round2: [false, false, false, false, false, false]
+  round1: Array(round1Levels.length).fill(false),
+  round2: Array(round2Levels.length).fill(false)
 };
 
 function setupMobileControls() {
@@ -757,13 +753,15 @@ function setupMobileControls() {
 
 window.onload = () => {
   document.getElementById("playButton").addEventListener("click", () => {
-    document.getElementById("startScreen").style.display = "none";
-    document.getElementById("roundScreen").style.display = "flex";
+    showRoundScreen();
   });
 
   const soundToggle = document.getElementById("soundToggle");
   const nextLevelButton = document.getElementById("nextLevelButton");
   nextLevelButton.addEventListener("click", skipToNextLevel);
+  document.getElementById("completionContinue").addEventListener("click", showRoundScreen);
+  document.getElementById("completionReplay").addEventListener("click", () => startLevel(level));
+  document.getElementById("completionNext").addEventListener("click", () => startLevel(level + 1));
 
   soundToggle.addEventListener("click", () => {
     isMuted = !isMuted;
@@ -788,22 +786,11 @@ window.onload = () => {
 };
 
 function startGame() {
-  document.getElementById("startScreen").style.display = "none";
-  document.getElementById("roundScreen").style.display = "none";
-  document.getElementById("controls").style.display = "flex"; 
-  document.getElementById("gameArea").style.display = "block";
-  canvas.style.display = "block";
-  document.getElementById("soundToggle").style.display = "block";
-  document.getElementById("nextLevelButton").style.display = "block";
-  loadLevel(currentLevel);
+  startLevel(0);
 }
 
-
+   w
 function returnToMenu() {
-  document.getElementById("controls").style.display = "none"; 
-  document.getElementById("roundScreen").style.display = "flex";
-  document.getElementById("gameArea").style.display = "none";
-  document.getElementById("soundToggle").style.display = "none";
-  document.getElementById("nextLevelButton").style.display = "none";
-  canvas.style.display = "none";
+  showRoundScreen();  
 }
+   
