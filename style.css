@@ -245,7 +245,7 @@ html, body {
 }
 
 .level-node.completed .node-marker {
-  border-color: #00ffff;
+  border-color: #000000;
   background: #176b70;
 }
 
