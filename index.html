@@ -29,7 +29,7 @@
       <path class="route-dash" d="M80 310 C145 310 150 105 220 105 S295 285 360 285 S435 105 500 105 S575 285 640 285 S715 105 780 105 S855 285 920 285"></path>
     </svg>
     <div id="levelNodes" class="level-nodes" aria-label="Levels"></div>
-    <p id="mapProgress" class="map-progress" aria-live="polite"></p>
+   
   </div>
 </div>
 
@@ -41,37 +41,96 @@
 
 
 
-  <div id="gameArea">
-    <canvas id="game" width="800"   height="400"></canvas>
-    <button id="nextLevelButton" type="button" title="Skip to the next level (testing only)">Next Level</button>
-    <button id="soundToggle" type="button" aria-label="Mute sound" title="Mute sound" aria-pressed="false">🔊</button>
-  </div>
-  <section id="levelCompleteScreen" role="dialog" aria-modal="true" aria-labelledby="completionTitle" style="display:none;">
-    <div class="completion-card">
-      <h1 id="completionTitle">Level Complete!</h1>
-      <p id="completionStage" class="completion-stage"></p>
-      <div class="completion-stats">
-        <div><span>Time</span><strong id="completionTime"></strong></div>
-        <div><span>Score</span><strong id="completionScore"></strong></div>
-        <div><span>Batteries</span><strong id="completionCoins"></strong></div>
+ <div id="gameArea">
+  <h1 id="roundGameHeading">Robot Factory</h1>
+  <canvas id="game" width="800" height="400"></canvas>
+</div>
+
+<!-- Sound Toggle Button -->
+<button
+  id="soundToggle"
+  type="button"
+  aria-label="Mute sound"
+  title="Mute sound"
+  aria-pressed="false"
+  style="display: none;"
+>
+  🔊
+</button>
+
+<!-- Level Complete Screen -->
+<section
+  id="levelCompleteScreen"
+  role="dialog"
+  aria-modal="true"
+  aria-labelledby="completionTitle"
+  style="display: none;"
+>
+  <div class="completion-card">
+    <h1 id="completionTitle">Level Complete!</h1>
+    <p id="completionStage" class="completion-stage"></p>
+
+    <div class="completion-stats">
+      <div>
+        <span>Time</span>
+        <strong id="completionTime"></strong>
       </div>
-      <div id="completionStars" class="completion-stars" aria-label="Level rating"></div>
-      <div class="completion-actions">
-        <button id="completionReplay" type="button" aria-label="Replay this level" disabled>
-          <span aria-hidden="true">↻</span>
-        </button>
-        <button id="completionContinue" type="button" aria-label="Choose a level" disabled>
-          <span aria-hidden="true">☷</span>
-        </button>
-        <button id="completionNext" type="button" aria-label="Next level" disabled>
-          <svg class="completion-next-icon" aria-hidden="true" viewBox="0 0 32 32">
-            <path d="M5 16h21M17 7l9 9-9 9"></path>
-          </svg>
-        </button>
+
+      <div>
+        <span id="completionScoreLabel">Score</span>
+        <strong id="completionScore"></strong>
+      </div>
+
+      <div>
+        <span id="completionCoinsLabel">Batteries</span>
+        <strong id="completionCoins"></strong>
       </div>
     </div>
-  </section>
-  <script src="game.js"></script>
+
+    <div
+      id="completionStars"
+      class="completion-stars"
+      aria-label="Level rating"
+    ></div>
+
+    <div class="completion-actions">
+      <button
+        id="completionReplay"
+        type="button"
+        aria-label="Replay this level"
+        disabled
+      >
+        <span aria-hidden="true">↻</span>
+      </button>
+
+      <button
+        id="completionContinue"
+        type="button"
+        aria-label="Choose a level"
+        disabled
+      >
+        <span aria-hidden="true">☷</span>
+      </button>
+
+      <button
+        id="completionNext"
+        type="button"
+        aria-label="Next level"
+        disabled
+      >
+        <svg
+          class="completion-next-icon"
+          aria-hidden="true"
+          viewBox="0 0 32 32"
+        >
+          <path d="M5 16h21M17 7l9 9-9 9"></path>
+        </svg>
+      </button>
+    </div>
+  </div>
+</section>
+
+<script src="game.js"></script>
 
 </body>
-</html>  
+</html>

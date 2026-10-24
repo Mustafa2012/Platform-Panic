@@ -40,6 +40,10 @@ platformImg.src = 'Images/Platform.png';
 
 let level = 0;
 let score = 0;
+let levelJumpCount = 0;
+const maxLevelHearts = 5;
+let levelHearts = maxLevelHearts;
+let levelHeartsUsed = 0;
 let transitioning = false;
 let isPaused = false;
 let levelTimer = 20; 
@@ -225,7 +229,6 @@ function showRoundScreen() {
   document.getElementById("roundScreen").style.display = "flex";
   document.getElementById("gameArea").style.display = "none";
   document.getElementById("soundToggle").style.display = "none";
-  document.getElementById("nextLevelButton").style.display = "none";
   document.getElementById("controls").style.display = "none";
   document.getElementById("levelCompleteScreen").style.display = "none";
   renderLevelMap();
@@ -235,18 +238,25 @@ function showLevelCompleteScreen() {
   const totalCoins = currentLevel.coins.length;
   const collectedCoins = currentLevel.coins.filter(coin => coin.collected).length;
   const elapsedTime = 20 - levelTimer;
-  const earnedStars = [
-    true,
-    collectedCoins === totalCoins,
-    elapsedTime < 10,
-  ];
+  const efficientJumpLimit = currentLevel.platforms.filter(platform => platform.type !== "spiky").length;
+  const earnedStars = currentRound === 1
+    ? [true, collectedCoins === totalCoins, elapsedTime < 10]
+    : [elapsedTime < 10, levelHeartsUsed === 0, levelJumpCount <= efficientJumpLimit];
   const starsEarned = earnedStars.filter(Boolean).length;
+  const roundStars = levelStars[`round${currentRound}`];
+  roundStars[level] = Math.max(roundStars[level], starsEarned);
+  saveCompletedLevels();
   const stars = document.getElementById("completionStars");
 
   document.getElementById("completionStage").textContent = `STAGE ${level + 1}`;
   document.getElementById("completionTime").textContent = `${elapsedTime}s`;
-  document.getElementById("completionScore").textContent = score;
-  document.getElementById("completionCoins").textContent = `${collectedCoins}/${totalCoins}`;
+  document.getElementById("completionScoreLabel").textContent = currentRound === 1 ? "Score" : "Jumps";
+  document.getElementById("completionScore").textContent = currentRound === 1 ? score : levelJumpCount;
+  document.getElementById("completionCoins").textContent = currentRound === 1
+    ? `${collectedCoins}/${totalCoins}`
+    : `${levelHearts}/${maxLevelHearts}`;
+  document.getElementById("completionCoinsLabel").textContent =
+    currentRound === 1 ? "Batteries" : "Hearts";
   stars.replaceChildren(...earnedStars.map((_, index) => {
     const star = document.createElement("span");
     const icon = document.createElementNS("http://www.w3.org/2000/svg", "svg");
@@ -294,6 +304,7 @@ function selectRound(round) {
 function renderLevelMap() {
   const levels = currentRound === 1 ? round1Levels : round2Levels;
   const completed = currentRound === 1 ? completedLevels.round1 : completedLevels.round2;
+  const starsEarned = levelStars[`round${currentRound}`];
   const levelNames = Array.from({ length: levels.length }, (_, index) => `Lvl ${index + 1}`);
   const positions = [
     [8, 74], [22, 25], [36, 68], [50, 25], [64, 68], [78, 25], [92, 68]
@@ -314,6 +325,7 @@ function renderLevelMap() {
     const node = document.createElement("button");
     const marker = document.createElement("span");
     const title = document.createElement("span");
+    const stars = document.createElement("span");
     const [x, y] = positions[index];
 
     node.type = "button";
@@ -321,7 +333,10 @@ function renderLevelMap() {
     node.style.setProperty("--node-x", `${x}%`);
     node.style.setProperty("--node-y", `${y}%`);
     node.disabled = !isUnlocked;
-    node.setAttribute("aria-label", `${levelNames[index]}${isCompleted ? ", completed" : isUnlocked ? ", unlocked" : ", locked"}`);
+    node.setAttribute(
+      "aria-label",
+      `${levelNames[index]}${isCompleted ? ", completed" : isUnlocked ? ", unlocked" : ", locked"}, ${starsEarned[index]} of 3 stars`
+    );
     node.title = isUnlocked ? `Play ${levelNames[index]}` : "Complete the previous level to unlock";
     marker.className = "node-marker";
     if (isUnlocked || isCompleted) {
@@ -338,7 +353,25 @@ function renderLevelMap() {
     }
     title.className = "node-title";
     title.textContent = levelNames[index];
-    node.append(marker, title);
+    stars.className = "node-stars";
+    stars.hidden = starsEarned[index] === 0;
+    stars.setAttribute("aria-label", `${starsEarned[index]} of 3 stars`);
+    stars.replaceChildren(...Array.from({ length: 3 }, (_, starIndex) => {
+      const star = document.createElement("span");
+      const icon = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+      const shape = document.createElementNS("http://www.w3.org/2000/svg", "path");
+
+      star.className = starIndex < starsEarned[index] ? "earned" : "";
+      star.setAttribute("aria-hidden", "true");
+      icon.setAttribute("viewBox", "0 0 48 48");
+      icon.classList.add("node-star-icon");
+      shape.setAttribute("d", "M24 4 29.5 17.2 44 18.4 32.8 27.8 36.2 42 24 34.5 11.8 42 15.2 27.8 4 18.4 18.5 17.2Z");
+      shape.setAttribute("stroke-linejoin", "round");
+      icon.append(shape);
+      star.append(icon);
+      return star;
+    }));
+    node.append(marker, title, stars);
     if (isUnlocked) node.addEventListener("click", () => startLevel(index));
     levelNodes.append(node);
   });
@@ -358,10 +391,12 @@ function startLevel(index) {
   document.getElementById("roundScreen").style.display = "none";
   document.getElementById("levelCompleteScreen").style.display = "none";
   document.getElementById("gameArea").style.display = "block";
+  const roundHeading = document.getElementById("roundGameHeading");
+  roundHeading.textContent = currentRound === 1 ? "Training Grounds" : "Robot Factory";
+  roundHeading.style.display = "block";
   document.getElementById("game").style.display = "block";
   document.getElementById("controls").style.display = "flex";
   document.getElementById("soundToggle").style.display = "block";
-  document.getElementById("nextLevelButton").style.display = "block";
   loadLevel(level);
 
   if (!gameLoopStarted) {
@@ -395,11 +430,16 @@ function playSound(sound) {
 let currentRound = 1;
 let allLevels = round1Levels; 
 
-function loadLevel(index) {
+function loadLevel(index, preserveAttempt = false) {
   const levels = currentRound === 1 ? round1Levels : round2Levels; 
   const lvl = levels[index];
 
   score = 0;
+  levelJumpCount = 0;
+  if (!preserveAttempt) {
+    levelHearts = maxLevelHearts;
+    levelHeartsUsed = 0;
+  }
   player = {
     x: lvl.playerStart.x,
     y: lvl.playerStart.y,
@@ -431,30 +471,21 @@ function loadLevel(index) {
     levelTimer--;
     if (levelTimer <= 0) {
       clearInterval(timerInterval);
-      if (currentRound === 1) {
-        keys = {};
-        loadLevel(level);
-        playSound(hitSound);
-      } else {
-        resetGame();
-      }
+      loseLevelHeart();
     }
   }, 1000);
 }
 
-function skipToNextLevel() {
-  if (!gameLoopStarted || transitioning) return;
-
-  const levels = currentRound === 1 ? round1Levels : round2Levels;
-  level = (level + 1) % levels.length;
-  keys = {};
-  loadLevel(level);
+function resetPlayer() {
+  loseLevelHeart();
 }
 
-
-function resetPlayer() {
+function loseLevelHeart() {
   keys = {};
-  loadLevel(level);
+  levelHeartsUsed++;
+  levelHearts--;
+  if (levelHearts === 0) levelHearts = maxLevelHearts;
+  loadLevel(level, true);
   playSound(hitSound);
 }
 
@@ -490,6 +521,7 @@ function update() {
 
   if ((keys["Space"] || keys["ArrowUp"] || keys["KeyW"]) && player.onGround) {
     player.ySpeed = inBooster ? -20.4 : -12;
+    levelJumpCount++;
     playSound(jumpSound);
     player.onGround = false;
   }
@@ -555,8 +587,7 @@ function update() {
     );
   });
   if (hitEnemy) {
-    if (currentRound === 1) resetPlayer();
-    else resetGame();
+    resetPlayer();
     return;
   }
 
@@ -595,6 +626,7 @@ function update() {
 
     if (currentRound === 1) completedLevels.round1[level] = true;
     if (currentRound === 2) completedLevels.round2[level] = true;
+    saveCompletedLevels();
     showLevelCompleteScreen();
   }
 }
@@ -606,7 +638,6 @@ function update() {
 function isRoundComplete(round) {
   return completedLevels[`round${round}`].every(done => done);
 }
-
 
 function draw(timestamp) {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -685,12 +716,54 @@ function draw(timestamp) {
   }
 
 
- ctx.fillStyle = "#00f5d4";  
+
+
 ctx.font = "18px Courier";
-ctx.fillText("Round: " + currentRound, 250, 25);
+ctx.fillStyle = "#00f5d4";
+ctx.textBaseline = "alphabetic";
+
+// Score
+ctx.textAlign = "left";
 ctx.fillText("Score: " + score, 10, 25);
-ctx.fillText("Level: " + (level + 1), 460, 25);
-ctx.fillText("Time: " + levelTimer + "s", 620, 25);
+
+// Hearts (Round 2)
+if (currentRound === 2) {
+  ctx.fillStyle = "#a6bbc9";
+  ctx.textAlign = "center";
+  ctx.fillText("HP", canvas.width * 0.30625, 25);
+
+  for (let heart = 0; heart < maxLevelHearts; heart++) {
+    const x = canvas.width * 0.34375 + heart * 17;
+    const y = 11;
+
+    ctx.beginPath();
+    ctx.moveTo(x + 7, y + 14);
+    ctx.bezierCurveTo(x + 5, y + 12, x, y + 8, x, y + 5);
+    ctx.bezierCurveTo(x, y, x + 6, y - 1, x + 7, y + 4);
+    ctx.bezierCurveTo(x + 9, y - 1, x + 15, y, x + 14, y + 5);
+    ctx.bezierCurveTo(x + 14, y + 8, x + 9, y + 12, x + 7, y + 14);
+    ctx.closePath();
+
+    ctx.fillStyle = "#00f5d4";
+    ctx.fill();
+  }
+}
+
+// Level
+ctx.fillStyle = "#00f5d4";
+ctx.textAlign = "center";
+ctx.fillText(
+  "Level: " + (level + 1),
+  currentRound === 2 ? canvas.width * 0.625 : canvas.width / 2,
+  25
+);
+
+// Timer
+ctx.fillStyle = "#00f5d4";
+ctx.textAlign = "right";
+ctx.fillText("Time: " + levelTimer + "s", canvas.width - 12, 25);
+
+ctx.textAlign = "start";
 
 if (isPaused) {
   ctx.fillStyle = "rgba(0, 0, 0, 0.65)";
@@ -721,10 +794,86 @@ function gameLoop(timestamp = performance.now()) {
         
 
 
-let completedLevels = {
-  round1: Array(round1Levels.length).fill(false),
-  round2: Array(round2Levels.length).fill(false)
-};
+const levelProgressStorageKey = "platformPanic.completedLevels";
+
+function loadCompletedLevels() {
+  const emptyProgress = {
+    round1: Array(round1Levels.length).fill(false),
+    round2: Array(round2Levels.length).fill(false)
+  };
+
+  try {
+    const savedProgress = localStorage.getItem(levelProgressStorageKey);
+    if (!savedProgress) return emptyProgress;
+
+    const parsedProgress = JSON.parse(savedProgress);
+    const isValidRound = (round, length) =>
+      Array.isArray(parsedProgress[round]) &&
+      parsedProgress[round].length === length &&
+      parsedProgress[round].every(completed => typeof completed === "boolean");
+
+    if (
+      !parsedProgress ||
+      typeof parsedProgress !== "object" ||
+      !isValidRound("round1", round1Levels.length) ||
+      !isValidRound("round2", round2Levels.length)
+    ) {
+      console.warn("Saved level progress is invalid; starting with fresh progress.");
+      return emptyProgress;
+    }
+
+    return {
+      round1: parsedProgress.round1,
+      round2: parsedProgress.round2
+    };
+  } catch (error) {
+    console.error("Unable to load saved level progress:", error);
+    return emptyProgress;
+  }
+}
+
+let completedLevels = loadCompletedLevels();
+let levelStars = loadLevelStars();
+
+function saveCompletedLevels() {
+  try {
+    localStorage.setItem(levelProgressStorageKey, JSON.stringify({
+      ...completedLevels,
+      stars: levelStars
+    }));
+  } catch (error) {
+    console.error("Unable to save level progress:", error);
+  }
+}
+
+function loadLevelStars() {
+  const completionOnlyStars = () => ({
+    round1: completedLevels.round1.map(completed => Number(completed)),
+    round2: completedLevels.round2.map(completed => Number(completed))
+  });
+
+  try {
+    const savedProgress = localStorage.getItem(levelProgressStorageKey);
+    const savedStars = savedProgress ? JSON.parse(savedProgress)?.stars : null;
+    if (!savedStars) return completionOnlyStars();
+
+    const isValidRound = (round, length) =>
+      Array.isArray(savedStars[round]) &&
+      savedStars[round].length === length &&
+      savedStars[round].every(stars => Number.isInteger(stars) && stars >= 0 && stars <= 3);
+
+    if (!isValidRound("round1", round1Levels.length) || !isValidRound("round2", round2Levels.length)) {
+      console.warn("Saved level stars are invalid; using completion-only ratings.");
+      return completionOnlyStars();
+    }
+
+    return { round1: savedStars.round1, round2: savedStars.round2 };
+  } catch (error) {
+    console.error("Unable to load saved level stars:", error);
+    return completionOnlyStars();
+  }
+}
+
 
 function setupMobileControls() {
   const leftBtn = document.getElementById("leftBtn");
@@ -768,8 +917,6 @@ window.onload = () => {
   });
 
   const soundToggle = document.getElementById("soundToggle");
-  const nextLevelButton = document.getElementById("nextLevelButton");
-  nextLevelButton.addEventListener("click", skipToNextLevel);
   document.getElementById("completionContinue").addEventListener("click", showRoundScreen);
   document.getElementById("completionReplay").addEventListener("click", () => startLevel(level));
   document.getElementById("completionNext").addEventListener("click", () => startLevel(level + 1));
@@ -800,7 +947,7 @@ function startGame() {
   startLevel(0);
 }
 
-   w
+   
 function returnToMenu() {
   showRoundScreen();  
 }

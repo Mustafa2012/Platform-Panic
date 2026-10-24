@@ -201,14 +201,13 @@ html, body {
 }
 
 .level-node {
+  --marker-size: clamp(52px, 7vw, 72px);
   position: absolute;
   left: var(--node-x, 50%);
   top: var(--node-y, 50%);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 8px;
-  width: 90px;
+  display: block;
+  width: var(--marker-size);
+  height: var(--marker-size);
   padding: 0;
   transform: translate(-50%, -50%);
   border: 0;
@@ -224,16 +223,20 @@ html, body {
 }
 
 .level-node .node-marker {
+  position: absolute;
+  top: 50%;
+  left: 50%;
   display: grid;
   place-items: center;
-  width: clamp(52px, 7vw, 72px);
-  height: clamp(52px, 7vw, 72px);
+  width: var(--marker-size);
+  height: var(--marker-size);
   border-radius: 50%;
   border: 2px solid #67a1a1;
   background: #014d4e;
   color: #d7efec;
   font-size: 23px;
   font-weight: bold;
+  transform: translate(-50%, -50%);
   transition: background 150ms ease;
 }
 
@@ -268,11 +271,52 @@ html, body {
 }
 
 .node-title {
+  position: absolute;
+  top: calc(100% + 5px);
+  left: 50%;
   max-width: 112px;
   font-size: clamp(11px, 1.4vw, 14px);
   font-weight: bold;
   text-align: center;
   text-shadow: none;
+  transform: translateX(-50%);
+  white-space: nowrap;
+}
+
+.node-stars {
+  position: absolute;
+  top: calc(100% + 22px);
+  left: 50%;
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  color: #536970;
+  transform: translateX(-50%);
+  white-space: nowrap;
+}
+
+.node-stars[hidden] {
+  display: none;
+}
+
+.node-stars > span {
+  display: block;
+  width: 14px;
+  height: 14px;
+}
+
+.node-star-icon {
+  display: block;
+  width: 100%;
+  height: 100%;
+  fill: currentColor;
+  stroke: currentColor;
+  stroke-linejoin: round;
+  stroke-width: 2.5;
+}
+
+.node-stars .earned {
+  color: #00ffff;
 }
 
 .map-progress {
@@ -308,7 +352,7 @@ html, body {
   }
 
   .level-node {
-    width: 66px;
+    --marker-size: 52px;
   }
 
   .node-title {
@@ -329,43 +373,33 @@ html, body {
   width: min(94vw, 160vh, 1440px);
 }
 
-#soundToggle {
+#roundGameHeading {
   display: none;
   position: absolute;
+  right: 0;
+  bottom: calc(100% + 10px);
+  left: 0;
+  color: #00f5d4;
+  font: bold clamp(28px, 5vw, 42px) "Courier New", monospace;
+  text-align: center;
+}
+
+#soundToggle {
+  display: none;
+  position: fixed;
   top: 12px;
-  right: 12px;
-  z-index: 2;
-  width: 40px;
-  height: 40px;
+  left: 12px;
+  z-index: 21;
+  width: 38px;
+  height: 38px;
   padding: 0;
-  border: 2px solid #00ffff;
-  border-radius: 6px;
-  background: #014d4e;
+  border: 1px solid #178f99;
+  border-radius: 4px;
+  background: #06272c;
   color: #00ffff;
   font-size: 20px;
   line-height: 1;
   cursor: pointer;
-}
-
-#nextLevelButton {
-  display: none;
-  position: absolute;
-  top: 12px;
-  right: 60px;
-  z-index: 2;
-  padding: 0 10px;
-  height: 40px;
-  border: 2px solid #00ffff;
-  border-radius: 6px;
-  background: #014d4e;
-  color: #00ffff;
-  font: bold 14px "Courier New", monospace;
-  cursor: pointer;
-}
-
-#nextLevelButton:hover {
-  background: #67a1a1;
-  color: #014d4e;
 }
 
 #soundToggle:hover {
