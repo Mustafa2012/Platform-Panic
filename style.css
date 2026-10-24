@@ -104,10 +104,10 @@ html, body {
   height: 100%;
   padding: clamp(20px, 4vh, 48px) clamp(18px, 5vw, 72px);
   overflow: auto;
-  background: #092f35;
+  background: #05333b;
   display: flex;
   flex-direction: column;
-  justify-content: flex-start;
+  justify-content: center;
   align-items: center;
   gap: 24px;
   z-index: 5;
@@ -123,52 +123,50 @@ html, body {
 .round-tabs {
   display: flex;
   justify-content: center;
-  gap: 4px;
+  gap: clamp(18px, 4vw, 40px);
   width: min(100%, 520px);
-  padding: 4px;
-  border: 1px solid #52777a;
-  border-radius: 8px;
-  background: #06272c;
+  padding: 0 12px;
+  border-bottom: 1px solid #52777a;
 }
 
 .round-tab {
   flex: 1;
   min-height: 44px;
-  padding: 9px 14px;
-  border: 1px solid transparent;
-  border-radius: 5px;
+  padding: 9px 8px 11px;
+  border: 0;
+  border-bottom: 3px solid transparent;
   background: transparent;
   color: #b3c8c9;
   font: bold clamp(13px, 2vw, 17px) "Courier New", monospace;
   cursor: pointer;
-  transition: color 150ms ease, background 150ms ease;
+  transition: color 150ms ease, border-color 150ms ease;
 }
 
 .round-tab:hover {
-  color: #fff;
-  background: #17434a;
+  color: #00ffff;
 }
 
 .round-tab.selected {
-  border-color: #77c9bc;
-  background: #27645f;
-  color: #fff;
+  border-bottom-color: #00ffff;
+  color: #00ffff;
 }
 
 .level-map {
   position: relative;
   width: min(100%, 1000px);
+  margin-inline: auto;
   height: clamp(270px, 55vh, 430px);
   min-height: 260px;
   flex: 0 0 auto;
   overflow: hidden;
-  border: 1px solid #42666a;
-  border-radius: 10px;
+  border: 1px solid #52777a;
+  border-radius: 8px;
   background-color: #143b3f;
   background-image:
-    linear-gradient(#ffffff08 1px, transparent 1px),
-    linear-gradient(90deg, #ffffff08 1px, transparent 1px);
+    linear-gradient(#ffffff0a 1px, transparent 1px),
+    linear-gradient(90deg, #ffffff0a 1px, transparent 1px);
   background-size: 32px 32px;
+  box-shadow: inset 0 0 0 1px #ffffff08, 0 10px 28px #00161955;
 }
 
 .map-route {
@@ -179,12 +177,22 @@ html, body {
   overflow: visible;
 }
 
-.map-route path {
+.map-route .route-base,
+.map-route .route-dash {
   fill: none;
-  stroke: #b6a77b;
-  stroke-width: 4;
   stroke-linecap: round;
-  stroke-dasharray: 2 11;
+  stroke-linejoin: round;
+}
+
+.map-route .route-base {
+  stroke: #014d4e;
+  stroke-width: 10;
+}
+
+.map-route .route-dash {
+  stroke: #67a1a1;
+  stroke-width: 3;
+  stroke-dasharray: 3 12;
 }
 
 .level-nodes {
@@ -210,29 +218,32 @@ html, body {
   cursor: pointer;
 }
 
+.level-node:focus-visible {
+  outline: 2px solid #00ffff;
+  outline-offset: 6px;
+}
+
 .level-node .node-marker {
   display: grid;
   place-items: center;
   width: clamp(52px, 7vw, 72px);
   height: clamp(52px, 7vw, 72px);
   border-radius: 50%;
-  border: 2px solid #b9d8cf;
-  background: #28625d;
-  color: #fff;
+  border: 2px solid #67a1a1;
+  background: #014d4e;
+  color: #d7efec;
   font-size: 23px;
   font-weight: bold;
-  box-shadow: 0 3px 0 #092b30;
-  transition: transform 150ms ease, background 150ms ease;
+  transition: background 150ms ease;
 }
 
 .level-node:hover:not(:disabled) .node-marker {
-  transform: translateY(-3px);
-  background: #34796f;
+  background: #176b70;
 }
 
 .level-node.completed .node-marker {
-  border-color: #c8d88a;
-  background: #586b3c;
+  border-color: #00ffff;
+  background: #176b70;
 }
 
 .level-node:disabled {
@@ -244,7 +255,16 @@ html, body {
   border-color: #63787a;
   background: #334b4e;
   color: #9eacad;
-  box-shadow: 0 3px 0 #092b30;
+}
+
+.lock-icon {
+  width: 24px;
+  height: 24px;
+  fill: none;
+  stroke: currentColor;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 2;
 }
 
 .node-title {
@@ -252,14 +272,18 @@ html, body {
   font-size: clamp(11px, 1.4vw, 14px);
   font-weight: bold;
   text-align: center;
-  text-shadow: 0 1px 2px #001619;
+  text-shadow: none;
 }
 
 .map-progress {
   position: absolute;
   right: 18px;
   bottom: 14px;
-  color: #c1d0c9;
+  padding: 7px 10px;
+  border: 1px solid #52777a;
+  border-radius: 4px;
+  background: #06272c;
+  color: #d7efec;
   font: 14px "Courier New", monospace;
 }
 

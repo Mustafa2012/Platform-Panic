@@ -324,7 +324,18 @@ function renderLevelMap() {
     node.setAttribute("aria-label", `${levelNames[index]}${isCompleted ? ", completed" : isUnlocked ? ", unlocked" : ", locked"}`);
     node.title = isUnlocked ? `Play ${levelNames[index]}` : "Complete the previous level to unlock";
     marker.className = "node-marker";
-    marker.textContent = isCompleted ? "✓" : isUnlocked ? String(index + 1) : "🔒";
+    if (isUnlocked || isCompleted) {
+      marker.textContent = isCompleted ? "✓" : String(index + 1);
+    } else {
+      const lockIcon = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+      const lockShape = document.createElementNS("http://www.w3.org/2000/svg", "path");
+      lockIcon.setAttribute("viewBox", "0 0 24 24");
+      lockIcon.setAttribute("aria-hidden", "true");
+      lockIcon.classList.add("lock-icon");
+      lockShape.setAttribute("d", "M7 10V7a5 5 0 0 1 10 0v3M6 10h12v10H6z");
+      lockIcon.append(lockShape);
+      marker.append(lockIcon);
+    }
     title.className = "node-title";
     title.textContent = levelNames[index];
     node.append(marker, title);
