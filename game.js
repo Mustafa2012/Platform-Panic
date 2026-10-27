@@ -531,6 +531,22 @@ function update() {
   player.x += player.xSpeed;
   player.y += player.ySpeed;
 
+  if (player.x < 0) {
+  player.x = 0;
+  player.xSpeed = 0;
+}   
+   
+if (player.x + player.width > canvas.width) {
+  player.x = canvas.width - player.width;
+  player.xSpeed = 0;
+}
+
+// Keep the player inside the top boundary
+if (player.y < 0) {
+  player.y = 0;
+  player.ySpeed = 0;
+}
+
   const hitSpikes = currentLevel.platforms.some(p =>
     p.type === "spiky" &&
     player.x < p.x + p.width &&
@@ -732,7 +748,7 @@ if (currentRound === 2) {
   ctx.textAlign = "center";
   ctx.fillText("HP", canvas.width * 0.30625, 25);
 
-  for (let heart = 0; heart < maxLevelHearts; heart++) {
+  for (let heart = 0; heart < levelHearts; heart++) {
     const x = canvas.width * 0.34375 + heart * 17;
     const y = 11;
 
